@@ -3,7 +3,7 @@
 This repository contains the exercise sheets as well as the code for the pattern recognition exercises. Solutions to the exercises will not be provided but only shown in the Monday exercise seminar slots.
 
 ## Exercise upload ##
-Exercises needs to be uploaded on courses after the exercise sessions. Only 1 upload pr/group should be uploaded.
+Exercises needs to be uploaded on **courses** after the exercise sessions. Only 1 version/group should be uploaded.
 Fill out the names of each group member in the group.txt file.
 
 ## Installation ##
@@ -33,8 +33,12 @@ Install package list used for the exercises:
 $ pip install -r requirements.txt
 ```
 
+For the programming IDE we recommend using PyCharm https://www.jetbrains.com/pycharm/download
 
-## Kontakt ##
+Students are able to get access to the full version by applying here: https://www.jetbrains.com/student/ but for the exercises here, the community version should be sufficient.
+
+## Contact ##
+
 - Dr. Adam Kortylewski <adam.kortylewski@unibas.ch>
 - Dennis Madsen <dennis.madsen@unibas.ch>
 - Dana Rahbani <dana.rahbani@unibas.ch>
