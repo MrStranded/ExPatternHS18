@@ -6,7 +6,7 @@ class MVND:
     def __init__(self, data, p=1.0):
         self.p = p
         self.data = data
-        self.mean = np.matrix(data).mean(1)
+        self.mean = data.mean(1)
         self.cov  = np.cov(data)
 
     def pdf(self, x):

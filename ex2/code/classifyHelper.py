@@ -12,10 +12,9 @@ def likelihood(data, gmm):
     :return:        Likelihood of each data point
     '''
     likelihood = np.zeros((1, data.shape[0]))
-    # TODO: EXERCISE 2 - Compute likelihood of data
     # Note: For MVGD there will only be 1 item in the list
     for g in gmm:
-        likelihood = None
+        likelihood += g.pdf(data)
 
     return likelihood
 
