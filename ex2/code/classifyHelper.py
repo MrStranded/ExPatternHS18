@@ -15,7 +15,7 @@ def likelihood(data, gmm):
     # TODO: EXERCISE 2 - Compute likelihood of data
     # Note: For MVGD there will only be 1 item in the list
     for g in gmm:
-        likelihood = ???
+        likelihood = None
 
     return likelihood
 
@@ -42,18 +42,18 @@ def classify(img, mask, sPdf, nPdf, fig="", prior_skin=0.5, prior_nonskin=0.5):
     npixels = len(testmask)
 
     # TODO: EXERCISE 2 - Error Rate without prior
-    fp = ???
-    fn = ???
-    totalError = ???
+    fp = None
+    fn = None
+    totalError = None
     print('----- ----- -----')
     print('Total Error WITHOUT Prior =', totalError)
     print('false positive rate =',fp)
     print('false negative rate =',fn)
 
     # TODO: EXERCISE 2 - Error Rate with prior
-    fp_prior = ???
-    fn_prior = ???
-    totalError_prior = ???
+    fp_prior = None
+    fn_prior = None
+    totalError_prior = None
     print('----- ----- -----')
     print('Total Error WITH Prior =', totalError_prior)
     print('false positive rate =',fp_prior)
@@ -61,12 +61,12 @@ def classify(img, mask, sPdf, nPdf, fig="", prior_skin=0.5, prior_nonskin=0.5):
     print('----- ----- -----')
 
     # TODO: EXERCISE 2 - Compute and reshape false positive and false negative images
-    fpImage = ???
-    fnImage = ???
-    fpImagePrior = ???
-    fnImagePrior = ???
-    prediction = ???
-    predictionPrior = ???      # Hint: Use or get inspiration from the 'imageHelper' class
+    fpImage = None
+    fnImage = None
+    fpImagePrior = None
+    fnImagePrior = None
+    prediction = None
+    predictionPrior = None     # Hint: Use or get inspiration from the 'imageHelper' class
 
     plt.figure(fig)
     plt.subplot2grid((4, 5), (0,0), rowspan=2, colspan=2)

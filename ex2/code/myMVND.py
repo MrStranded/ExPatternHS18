@@ -7,12 +7,12 @@ class MVND:
     def __init__(self, data, p=1.0):
         self.p = p
         self.data = data
-        self.mean = ???
-        self.cov  = ???
+        self.mean = None
+        self.cov  = None
 
     # TODO: EXERCISE 2 - Implement pdf and logpdf of a MVND
     def pdf(self, x):
-        return ???
+        return None
     
     def logpdf(self, x):
-        return ???
+        return None
