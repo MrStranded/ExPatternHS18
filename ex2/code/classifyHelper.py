@@ -98,7 +98,7 @@ def classify(img, mask, sPdf, nPdf, fig="", prior_skin=0.5, prior_nonskin=0.5):
 
     plt.subplot(4, 5, 15)
     plt.imshow(fpImagePrior, cmap='gray');plt.axis('off')
-    plt.title('FalseNegative PRIOR')
+    plt.title('FalsePositive PRIOR')
     plt.subplot(4, 5, 20)
     plt.imshow(fnImagePrior, cmap='gray');plt.axis('off')
-    plt.title('FalsePositive PRIOR')
+    plt.title('FalseNegative PRIOR')
