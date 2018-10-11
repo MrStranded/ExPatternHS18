@@ -77,15 +77,46 @@ def gmm_em(data, K, iter, plot=False):
         elif r == 3:
             list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
 
-
-    print(list1)
     gmm = [MVND(list1), MVND(list2), MVND(list3)]
 
+    p_values = np.array((3, 200))
+
+    for i in range(iter):
+        #calc p values
+        for n in range(N):
+            v = data[:, n]
+            for k in range(K):
+                p_values[k, n] = gmm[k].pdf(v)
+
+        #new c values
+        c = []
+        for k in range(K):
+            sum = 0
+            for n in range(N):
+                sum += p_values[k, n]
+            sum = sum / N
+            c.append(sum)
+
+        #new mean
+        mu = np.array((2, K))
+        for k in range(K):
+            sumx = 0
+            sumy = 0
+            sumdivisor = 0
+            for n in range(N):
+                sumx += data[0, n] * p_values[k, n]
+                sumy += data[1, n] * p_values[k, n]
+                sumdivisor += p_values[k, n]
+            mu[:, k] = [[sumx / sumdivisor], [sumy / sumdivisor]]
+
+        print(c)
+        print(mu)
+
     # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
-    # Hint - first randomly assign a cluster to each sample - check
+    # Hint - first randomly assign a cluster to each sample
     # Hint - then iteratively update mean, cov and p value of each cluster via EM
     # Hint - use the gmm_draw() function to visualize each step
-    gmm_draw(gmm,data,"test")
+
 
 
     plt.show()
