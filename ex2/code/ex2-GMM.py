@@ -71,20 +71,11 @@ def gmm_em(data, K, iter, plot=False):
     for n in range(N):
         r = random.randint(1, 3)
         if r == 1:
-            if list1.size is 0:
-                list1 = np.asarray([data[:,n]]).T
-            else:
-                list1 = np.concatenate((list1, np.array([data[:, n]]).T), axis=1)
+            list1 = np.concatenate((list1, np.array([data[:, n]]).T), axis=1)
         elif r == 2:
-            if list2.size is 0:
-                list2 = np.asarray([data[:, n]]).T
-            else:
-                list2 = np.concatenate((list2, np.array([data[:, n]]).T), axis=1)
+            list2 = np.concatenate((list2, np.array([data[:, n]]).T), axis=1)
         elif r == 3:
-            if list3.size is 0:
-                list3 = np.asarray([data[:, n]]).T
-            else:
-                list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
+            list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
 
 
     print(list1)
