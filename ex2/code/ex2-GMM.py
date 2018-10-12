@@ -63,6 +63,7 @@ def gmm_em(data, K, iter, plot=False):
     '''
     eps = sys.float_info.epsilon
     [d, N] = data.shape
+    '''
     gmm = []
     list1 = np.zeros((2, 0))
     list2 = np.zeros((2, 0))
@@ -111,7 +112,7 @@ def gmm_em(data, K, iter, plot=False):
 
         print(c)
         print(mu)
-
+    '''
     # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
     # Hint - first randomly assign a cluster to each sample - check
     gmm = list()
