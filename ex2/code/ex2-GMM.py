@@ -63,6 +63,55 @@ def gmm_em(data, K, iter, plot=False):
     '''
     eps = sys.float_info.epsilon
     [d, N] = data.shape
+    gmm = []
+    list1 = np.zeros((2, 0))
+    list2 = np.zeros((2, 0))
+    list3 = np.zeros((2, 0))
+
+    for n in range(N):
+        r = random.randint(1, 3)
+        if r == 1:
+            list1 = np.concatenate((list1, np.array([data[:, n]]).T), axis=1)
+        elif r == 2:
+            list2 = np.concatenate((list2, np.array([data[:, n]]).T), axis=1)
+        elif r == 3:
+            list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
+
+    gmm = [MVND(list1), MVND(list2), MVND(list3)]
+
+    p_values = np.array((3, 200))
+
+    for i in range(iter):
+        #calc p values
+        for n in range(N):
+            v = data[:, n]
+            for k in range(K):
+                p_values[k, n] = gmm[k].pdf(v)
+
+        #new c values
+        c = []
+        for k in range(K):
+            sum = 0
+            for n in range(N):
+                sum += p_values[k, n]
+            sum = sum / N
+            c.append(sum)
+
+        #new mean
+        mu = np.array((2, K))
+        for k in range(K):
+            sumx = 0
+            sumy = 0
+            sumdivisor = 0
+            for n in range(N):
+                sumx += data[0, n] * p_values[k, n]
+                sumy += data[1, n] * p_values[k, n]
+                sumdivisor += p_values[k, n]
+            mu[:, k] = [[sumx / sumdivisor], [sumy / sumdivisor]]
+
+        print(c)
+        print(mu)
+
     # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
     # Hint - first randomly assign a cluster to each sample - check
     gmm = list()
