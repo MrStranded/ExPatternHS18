@@ -63,58 +63,7 @@ def gmm_em(data, K, iter, plot=False):
     '''
     eps = sys.float_info.epsilon
     [d, N] = data.shape
-    '''
-    gmm = []
-    list1 = np.zeros((2, 0))
-    list2 = np.zeros((2, 0))
-    list3 = np.zeros((2, 0))
 
-    for n in range(N):
-        r = random.randint(1, 3)
-        if r == 1:
-            list1 = np.concatenate((list1, np.array([data[:, n]]).T), axis=1)
-        elif r == 2:
-            list2 = np.concatenate((list2, np.array([data[:, n]]).T), axis=1)
-        elif r == 3:
-            list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
-
-    gmm = [MVND(list1), MVND(list2), MVND(list3)]
-
-    p_values = np.array((3, 200))
-
-    for i in range(iter):
-        #calc p values
-        for n in range(N):
-            v = data[:, n]
-            for k in range(K):
-                p_values[k, n] = gmm[k].pdf(v)
-
-        #new c values
-        c = []
-        for k in range(K):
-            sum = 0
-            for n in range(N):
-                sum += p_values[k, n]
-            sum = sum / N
-            c.append(sum)
-
-        #new mean
-        mu = np.array((2, K))
-        for k in range(K):
-            sumx = 0
-            sumy = 0
-            sumdivisor = 0
-            for n in range(N):
-                sumx += data[0, n] * p_values[k, n]
-                sumy += data[1, n] * p_values[k, n]
-                sumdivisor += p_values[k, n]
-            mu[:, k] = [[sumx / sumdivisor], [sumy / sumdivisor]]
-
-        print(c)
-        print(mu)
-    '''
-    # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
-    # Hint - first randomly assign a cluster to each sample - check
     gmm = list()
 
     data_list = list()
@@ -128,23 +77,48 @@ def gmm_em(data, K, iter, plot=False):
     for k in range(K):
         gmm.append(MVND(data_list[k]))
 
-    # Hint - then iteratively update mean, cov and p value of each cluster via EM
-    log_likehoods = []
-    while len(log_likehoods) < iter:
 
-        resp = np.zeros((N, K))
-        # E step
-        log_likelihood = np.sum(np.log(np.sum(resp, axis=1)))
-        log_likehoods.append(log_likelihood)
+    # calc responsibility matrix
+    for k in range(K):
+        gmm[k].p = gmm[k].p/K
 
-        if len(log_likehoods) < 2:
-            continue
-        if (log_likelihood - log_likehoods[-2]) < eps:
-            break
-        # M step
-        # Hint - use the gmm_draw() function to visualize each step
+    resp_mat = np.zeros((K,N))
 
-    gmm_draw(gmm, data, "Iteration" + str(len(log_likehoods)))
+    for iter_step in range(iter):
+
+        for n in range(N):
+            sum = 0
+
+            for j in range(K):
+                # calc denominator
+                sum += gmm[j].pdf(data[:,n])
+
+            for k in range(K):
+                # divide numerator by denominator for each matrix entry
+                resp_mat[k,n] = gmm[k].pdf(data[:,n]) / sum
+
+        # calc p, mu and cov for each gmm
+        for k in range(K):
+            sum_resp_k = np.sum(resp_mat,axis=1)[k]
+            # calc p
+            gmm[k].p = (1/N)*sum_resp_k
+
+            # calc mu
+            numerator = 0
+
+            for i in range(N):
+                numerator+= resp_mat[k,i]*data[:,i]
+            gmm[k].mean =numerator / sum_resp_k
+
+            # calc cov
+            numerator = 0
+            for i in range(N):
+                numerator += resp_mat[k,i]*np.dot(np.array([data[:,i]-gmm[k].mean]).T,np.array([data[:,i]-gmm[k].mean]))
+            gmm[k].cov = numerator / sum_resp_k
+
+
+        if plot:
+            gmm_draw(gmm,data,"Iteration " + str(iter_step))
 
 
     plt.show()
