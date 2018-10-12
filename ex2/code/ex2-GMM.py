@@ -84,7 +84,8 @@ def gmm_em(data, K, iter, plot=False):
 
     resp_mat = np.zeros((K,N))
 
-    for iter_step in range(iter):
+    likelihood_list = list()
+    while len(likelihood_list) < iter:
 
         for n in range(N):
             sum = 0
@@ -116,10 +117,22 @@ def gmm_em(data, K, iter, plot=False):
                 numerator += resp_mat[k,i]*np.dot(np.array([data[:,i]-gmm[k].mean]).T,np.array([data[:,i]-gmm[k].mean]))
             gmm[k].cov = numerator / sum_resp_k
 
-
+        lhood = 0
+        for i in range(N):
+            sum_temp = 0
+            for k in range(K):
+                sum_temp += gmm[k].pdf(data[:,i])
+            lhood += np.log(sum_temp)
+        print(lhood)
+        likelihood_list.append(lhood)
         if plot:
-            gmm_draw(gmm,data,"Iteration " + str(iter_step))
+            gmm_draw(gmm,data,"Iteration " + str(len(likelihood_list)))
+        if len(likelihood_list) < 2:
+            continue
+        if np.abs(lhood - likelihood_list[-2]) < eps:
+            break
 
+        print("Iteration " + str(len(likelihood_list)))
 
     plt.show()
     return gmm
@@ -130,7 +143,7 @@ def gmmToyExample():
     GMM toy example - load toyexample data and visualize cluster assignment of each datapoint
     '''
     gmmdata = scipy.io.loadmat(os.path.join(dataPath,'gmmdata.mat'))['gmmdata']
-    gmm_em(gmmdata, 3, 20, plot=True)
+    gmm_em(gmmdata, 3, 40, plot=False)
 
 
 def gmmSkinDetection():
