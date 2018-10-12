@@ -63,29 +63,38 @@ def gmm_em(data, K, iter, plot=False):
     '''
     eps = sys.float_info.epsilon
     [d, N] = data.shape
-    gmm = []
-    list1 = np.zeros((2, 0))
-    list2 = np.zeros((2, 0))
-    list3 = np.zeros((2, 0))
-
-    for n in range(N):
-        r = random.randint(1, 3)
-        if r == 1:
-            list1 = np.concatenate((list1, np.array([data[:, n]]).T), axis=1)
-        elif r == 2:
-            list2 = np.concatenate((list2, np.array([data[:, n]]).T), axis=1)
-        elif r == 3:
-            list3 = np.concatenate((list3, np.array([data[:, n]]).T), axis=1)
-
-
-    print(list1)
-    gmm = [MVND(list1), MVND(list2), MVND(list3)]
-
     # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
     # Hint - first randomly assign a cluster to each sample - check
+    gmm = list()
+
+    data_list = list()
+    for i in range(K):
+        data_list.append(np.zeros((d, 0)))
+
+    for n in range(N):
+        r = random.randint(0, K-1)
+        data_list[r] = np.concatenate((data_list[r], np.array([data[:, n]]).T), axis=1)
+
+    for k in range(K):
+        gmm.append(MVND(data_list[k]))
+
     # Hint - then iteratively update mean, cov and p value of each cluster via EM
-    # Hint - use the gmm_draw() function to visualize each step
-    gmm_draw(gmm,data,"test")
+    log_likehoods = []
+    while len(log_likehoods) < iter:
+
+        resp = np.zeros((N, K))
+        # E step
+        log_likelihood = np.sum(np.log(np.sum(resp, axis=1)))
+        log_likehoods.append(log_likelihood)
+
+        if len(log_likehoods) < 2:
+            continue
+        if (log_likelihood - log_likehoods[-2]) < eps:
+            break
+        # M step
+        # Hint - use the gmm_draw() function to visualize each step
+
+    gmm_draw(gmm, data, "Iteration" + str(len(log_likehoods)))
 
 
     plt.show()

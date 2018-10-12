@@ -10,7 +10,7 @@ class MVND:
         self.cov  = np.cov(data)
 
     def pdf(self, x):
-        return multivariate_normal.pdf(x, self.mean, self.cov)
+        return self.p * multivariate_normal.pdf(x, self.mean, self.cov)
     
     def logpdf(self, x):
-        return multivariate_normal.logpdf(x, self.mean, self.cov)
+        return np.log(self.p) + multivariate_normal.logpdf(x, self.mean, self.cov)
