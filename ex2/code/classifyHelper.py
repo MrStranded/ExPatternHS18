@@ -12,10 +12,9 @@ def likelihood(data, gmm):
     :return:        Likelihood of each data point
     '''
     likelihood = np.zeros((1, data.shape[0]))
-    # TODO: EXERCISE 2 - Compute likelihood of data
     # Note: For MVGD there will only be 1 item in the list
     for g in gmm:
-        likelihood = ???
+        likelihood += g.pdf(data)
 
     return likelihood
 
@@ -38,62 +37,68 @@ def classify(img, mask, sPdf, nPdf, fig="", prior_skin=0.5, prior_nonskin=0.5):
     l_skin_rgb = likelihood(im_rgb_lin, sPdf)
     l_nonskin_rgb = likelihood(im_rgb_lin, nPdf)
 
-    testmask = mask.getLinearImageBinary().astype(int)[:,0]
+    testmask = mask.getLinearImageBinary().astype(int)[:, 0]
     npixels = len(testmask)
 
-    # TODO: EXERCISE 2 - Error Rate without prior
-    fp = ???
-    fn = ???
-    totalError = ???
+    fp = np.sum(np.extract(l_skin_rgb >= l_nonskin_rgb, 1-testmask))/npixels
+    fn = np.sum(np.extract(l_skin_rgb <= l_nonskin_rgb, testmask))/npixels
+    totalError = fp+fn
     print('----- ----- -----')
     print('Total Error WITHOUT Prior =', totalError)
     print('false positive rate =',fp)
     print('false negative rate =',fn)
 
-    # TODO: EXERCISE 2 - Error Rate with prior
-    fp_prior = ???
-    fn_prior = ???
-    totalError_prior = ???
+    fp_prior = np.sum(np.extract(l_skin_rgb*prior_skin >= l_nonskin_rgb*prior_nonskin, 1-testmask))/npixels
+    fn_prior = np.sum(np.extract(l_skin_rgb*prior_skin <= l_nonskin_rgb*prior_nonskin, testmask))/npixels
+    totalError_prior = fp_prior + fn_prior
     print('----- ----- -----')
     print('Total Error WITH Prior =', totalError_prior)
     print('false positive rate =',fp_prior)
     print('false negative rate =',fn_prior)
     print('----- ----- -----')
 
-    # TODO: EXERCISE 2 - Compute and reshape false positive and false negative images
-    fpImage = ???
-    fnImage = ???
-    fpImagePrior = ???
-    fnImagePrior = ???
-    prediction = ???
-    predictionPrior = ???      # Hint: Use or get inspiration from the 'imageHelper' class
+    fpImage = np.reshape((l_skin_rgb >= l_nonskin_rgb) * (1-testmask), mask.shape)
+    fnImage = np.reshape((l_skin_rgb <= l_nonskin_rgb) * testmask, mask.shape)
+    fpImagePrior = np.reshape((l_skin_rgb*prior_skin > l_nonskin_rgb*prior_nonskin) * (1-testmask), mask.shape)
+    fnImagePrior = np.reshape((l_skin_rgb*prior_skin < l_nonskin_rgb*prior_nonskin) * testmask, mask.shape)
+    prediction = imageHelper()
+    prediction.loadImage1dBinary((l_skin_rgb >= l_nonskin_rgb) + (l_skin_rgb <= l_nonskin_rgb) * testmask, mask.N, mask.M)
+    predictionPrior = imageHelper()
+    predictionPrior.loadImage1dBinary((l_skin_rgb*prior_skin >= l_nonskin_rgb*prior_nonskin) + (l_skin_rgb*prior_skin <= l_nonskin_rgb*prior_nonskin) *testmask, mask.N, mask.M) # Hint: Use or get inspiration from the 'imageHelper' class
 
     plt.figure(fig)
     plt.subplot2grid((4, 5), (0,0), rowspan=2, colspan=2)
-    plt.imshow(img.image);plt.axis('off')
+    plt.imshow(img.image)
+    plt.axis('off')
     plt.title('Test image')
 
     plt.subplot2grid((4, 5), (0,2), rowspan=2, colspan=2)
-    plt.imshow(prediction.image, cmap='gray');plt.axis('off')
+    plt.imshow(prediction.image, cmap='gray')
+    plt.axis('off')
     plt.title('Skin prediction')
 
     plt.subplot2grid((4, 5), (2,2), rowspan=2, colspan=2)
-    plt.imshow(predictionPrior.image, cmap='gray');plt.axis('off')
+    plt.imshow(predictionPrior.image, cmap='gray')
+    plt.axis('off')
     plt.title('Skin prediction PRIOR')
 
     plt.subplot2grid((4, 5), (2,0), rowspan=2, colspan=2)
-    plt.imshow(mask.image, cmap='gray');plt.axis('off')
+    plt.imshow(mask.image, cmap='gray')
+    plt.axis('off')
     plt.title('GT mask')
 
     plt.subplot(4, 5, 5)
-    plt.imshow(fpImage, cmap='gray');plt.axis('off')
-    plt.title('FalseNegative')
+    plt.imshow(fpImage, cmap='gray')
+    plt.axis('off')
+    plt.title('FalsePositives')
+
     plt.subplot(4, 5, 10)
     plt.imshow(fnImage, cmap='gray');plt.axis('off')
-    plt.title('FalsePositive')
+    plt.title('FalseNegatives')
+
     plt.subplot(4, 5, 15)
     plt.imshow(fpImagePrior, cmap='gray');plt.axis('off')
-    plt.title('FalseNegative PRIOR')
+    plt.title('FalsePositive PRIOR')
     plt.subplot(4, 5, 20)
     plt.imshow(fnImagePrior, cmap='gray');plt.axis('off')
-    plt.title('FalsePositive PRIOR')
+    plt.title('FalseNegative PRIOR')

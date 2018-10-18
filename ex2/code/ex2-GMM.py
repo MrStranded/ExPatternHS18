@@ -63,13 +63,76 @@ def gmm_em(data, K, iter, plot=False):
     '''
     eps = sys.float_info.epsilon
     [d, N] = data.shape
-    gmm = []
-    # TODO: EXERCISE 2 - Implement E and M step of GMM algorithm
-    # Hint - first randomly assign a cluster to each sample
-    # Hint - then iteratively update mean, cov and p value of each cluster via EM
-    # Hint - use the gmm_draw() function to visualize each step
+
+    gmm = list()
+
+    data_list = list()
+    for i in range(K):
+        data_list.append(np.zeros((d, 0)))
+
+    for n in range(N):
+        r = random.randint(0, K-1)
+        data_list[r] = np.concatenate((data_list[r], np.array([data[:, n]]).T), axis=1)
+
+    for k in range(K):
+        gmm.append(MVND(data_list[k]))
 
 
+    # calc responsibility matrix
+    for k in range(K):
+        gmm[k].p = gmm[k].p/K
+
+    resp_mat = np.zeros((K,N))
+
+    likelihood_list = list()
+    while len(likelihood_list) < iter:
+
+        for n in range(N):
+            sum = 0
+
+            for j in range(K):
+                # calc denominator
+                sum += gmm[j].pdf(data[:,n])
+
+            for k in range(K):
+                # divide numerator by denominator for each matrix entry
+                resp_mat[k,n] = gmm[k].pdf(data[:,n]) / sum
+
+        # calc p, mu and cov for each gmm
+        for k in range(K):
+            sum_resp_k = np.sum(resp_mat,axis=1)[k]
+            # calc p
+            gmm[k].p = (1/N)*sum_resp_k
+
+            # calc mu
+            numerator = 0
+
+            for i in range(N):
+                numerator+= resp_mat[k,i]*data[:,i]
+            gmm[k].mean =numerator / sum_resp_k
+
+            # calc cov
+            numerator = 0
+            for i in range(N):
+                numerator += resp_mat[k,i]*np.dot(np.array([data[:,i]-gmm[k].mean]).T,np.array([data[:,i]-gmm[k].mean]))
+            gmm[k].cov = numerator / sum_resp_k
+
+        lhood = 0
+        for i in range(N):
+            sum_temp = 0
+            for k in range(K):
+                sum_temp += gmm[k].pdf(data[:,i])
+            lhood += np.log(sum_temp)
+        print(lhood)
+        likelihood_list.append(lhood)
+        if plot:
+            gmm_draw(gmm,data,"Iteration " + str(len(likelihood_list)))
+        if len(likelihood_list) < 2:
+            continue
+        if np.abs(lhood - likelihood_list[-2]) < eps:
+            break
+
+        print("Iteration " + str(len(likelihood_list)))
 
     plt.show()
     return gmm
@@ -80,7 +143,7 @@ def gmmToyExample():
     GMM toy example - load toyexample data and visualize cluster assignment of each datapoint
     '''
     gmmdata = scipy.io.loadmat(os.path.join(dataPath,'gmmdata.mat'))['gmmdata']
-    gmm_em(gmmdata, 3, 20, plot=True)
+    gmm_em(gmmdata, 3, 40, plot=False)
 
 
 def gmmSkinDetection():
