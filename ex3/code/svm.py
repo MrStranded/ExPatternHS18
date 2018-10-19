@@ -72,15 +72,15 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return ???
+        return None
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return ???
+        return None
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return ???
+        return None
 
 
     def __computeKernel__(self, x, kernelFunction, pars):
@@ -98,27 +98,27 @@ class SVM(object):
         # obtain the kernel
         if kernel == 'linear':
             print('Fitting SVM with linear kernel')
-            K = ???
+            K = None
             self.kernel = self.__linearKernel__
         elif kernel == 'poly':
             print('Fitting SVM with Polynomial kernel, order: {}'.format(kernelpar))
-            K = ???
+            K = None
             self.kernel = self.__polynomialKernel__
         elif kernel == 'rbf':
             print('Fitting SVM with RBF kernel, sigma: {}'.format(kernelpar))
-            K = ???
+            K = None
             self.kernel = self.__gaussianKernel__
         else:
             print('Fitting linear SVM')
-            K = ???
+            K = None
 
         if self.C is None:
-            G = ???
-            h = ???
+            G = None
+            h = None
         else:
             print("Using Slack variables")
-            G = ???
-            h = ???
+            G = None
+            h = None
 
 
         # TODO: Compute below values according to the lecture slides
@@ -136,7 +136,7 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return ???
+        return None
 
     def printLinearClassificationError(self, x, y):
         '''
@@ -154,7 +154,7 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return ???
+        return None
 
     def printKernelClassificationError(self, x, y):
         '''

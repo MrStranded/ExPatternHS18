@@ -34,7 +34,7 @@ def svmMNIST(train, test):
     test_x     = test[1:,:].astype(np.double)
 
     # TODO: Train svm
-    svm = ???
+    svm = None
 
     print("Training error")
     # TODO: Compute training error of SVM
@@ -44,8 +44,8 @@ def svmMNIST(train, test):
 
 
     # TODO: Visualize classification - correct and wrongly classified images
-    visualizeClassification(train_x, ???)
-    visualizeClassification(test_x, ???)
+    visualizeClassification(train_x, None)
+    visualizeClassification(test_x, None)
 
     return svm
 

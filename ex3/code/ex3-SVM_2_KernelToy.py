@@ -21,7 +21,7 @@ def svmKernelToyExample():
     toy_test_label[toy_test_label==0.0] = -1.0
 
     # TODO: Train svm
-    svm = ???
+    svm = None
 
     print("Training error")
     # TODO: Compute training error of SVM
