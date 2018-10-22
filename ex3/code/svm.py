@@ -129,6 +129,13 @@ class SVM(object):
 
 
         # TODO: Compute below values according to the lecture slides
+        P = cvx.matrix(P)
+        q = np.ones(shape=(1, NUM))
+        q = cvx.matrix(q)
+        A = None
+        b = None
+        cvx.solvers.options['show_progress'] = False
+        solution = cvx.solvers.qp(P, q, G, h, A, b)
         self.lambdas = None # Only save > 0
         self.w = None # SVM weights
         self.sv = None # List of support vectors
@@ -152,6 +159,7 @@ class SVM(object):
         :param y: Ground truth labels
         '''
         # TODO: Implement
+        result = 128371289
         print("Total error: {:.2f}%".format(result))
 
     def classifyKernel(self, x):
