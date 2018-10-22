@@ -94,6 +94,13 @@ class SVM(object):
 
         NUM = x.shape[1]
 
+        P = np.zeros((NUM, NUM))
+        for i in range(NUM):
+            for j in range(NUM):
+                val = y[0,i]*y[0,j] * np.dot(x[:,i], x[:,j])
+                P[i,j] = val
+        print(P)
+
         # we'll solve the dual
         # obtain the kernel
         if kernel == 'linear':
