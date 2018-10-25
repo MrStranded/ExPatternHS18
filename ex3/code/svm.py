@@ -117,26 +117,32 @@ class SVM(object):
             self.kernel = self.__gaussianKernel__
         else:
             print('Fitting linear SVM')
-            K = None
+            K = np.zeros(shape=(NUM, NUM))
 
+            for i in range(NUM):
+                for j in range(NUM):
+                    K[i, j] = np.dot(x[:, i], x[:, j])
         if self.C is None:
-            G = None
-            h = None
+            G = cvx.matrix(-np.eye(NUM))
+            h = cvx.matrix(np.zeros(NUM))
         else:
             print("Using Slack variables")
             G = None
             h = None
 
+        P = cvx.matrix(np.zeros((NUM, NUM)))
 
-        # TODO: Compute below values according to the lecture slides
-        P = cvx.matrix(P)
-        q = np.ones(shape=(1, NUM))
-        q = cvx.matrix(q)
-        A = None
-        b = None
-        cvx.solvers.options['show_progress'] = False
+        for i in range(NUM):
+            for j in range(NUM):
+                P[i, j] = K[i, j] * np.dot(y[:, i], y[:, j])
+        q = cvx.matrix(np.ones(NUM) * (-1))
+        A = cvx.matrix(y)
+        b = cvx.matrix(0.0)
+
+        cvx.solvers.options["show_progress"] = False
         solution = cvx.solvers.qp(P, q, G, h, A, b)
-        self.lambdas = None # Only save > 0
+        sol_x = np.array(solution["x"]).transpose()
+        self.lambdas = np.flatnonzero(sol_x > self.__TOL)  # Only save > 0
         self.w = None # SVM weights
         self.sv = None # List of support vectors
         self.sv_labels = None # List of labels for the support vectors (-1 or 1 for each support vector)
