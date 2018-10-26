@@ -72,21 +72,21 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return np.dot(x1[:,0].T,x2[:,0])
+        return np.dot(x1[0].T,x2[0])
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return np.power(np.dot(x1[:,0].T,x2[:,0])+1, p)
+        return np.power(np.dot(x1[0].T,x2[0])+1, p)
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return np.exp(-np.power(norm(x1[:,0]-x2[:,0]),2)/(2*np.power(sigma,2)))
+        return np.exp(-np.power(norm(x1[0]-x2[0]),2)/(2*np.power(sigma,2)))
 
 
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
         dim = x.shape[1]
-        K = np.zeros(dim)
+        K = np.zeros((dim,dim))
         for i in range(dim):
             for j in range(dim):
                 K[i,j] = kernelFunction(x[:,i],x[:,j],pars)
@@ -112,7 +112,7 @@ class SVM(object):
         if kernel == 'linear':
             print('Fitting SVM with linear kernel')
             self.kernel = self.__linearKernel__
-            K = self.__computeKernel__(x,self.kernel)
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         elif kernel == 'poly':
             print('Fitting SVM with Polynomial kernel, order: {}'.format(kernelpar))
             self.kernel = self.__polynomialKernel__
@@ -148,11 +148,11 @@ class SVM(object):
 
         cvx.solvers.options["show_progress"] = False
         solution = cvx.solvers.qp(P, q, G, h, A, b)
-        sol_x = np.array(solution["x"]).transpose()
-        self.lambdas = np.flatnonzero(sol_x > self.__TOL)  # Only save > 0
+        self.sol_x = np.array(solution["x"]).transpose()
+        self.lambdas = np.flatnonzero(self.sol_x > self.__TOL)  # Only save > 0
         self.sv = x[:, self.lambdas]  # List of support vectors
         self.sv_labels = y[:, self.lambdas]  # List of labels for the support vectors (-1 or 1 for each support vector)
-        self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
+        self.w = np.sum(self.sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
         self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
 
 
@@ -178,13 +178,13 @@ class SVM(object):
         classification = self.classifyLinear(x)
         equals = 0
         for i in range(classification.__len__()):
-            if (classification[i] > 0 and y[0,i] > 0):
+            if (classification[i] > 0 and y[0, i] > 0):
                 equals += 1
-            elif (classification[i] < 0 and y[0,i] < 0):
+            elif (classification[i] < 0 and y[0, i] < 0):
                 equals += 1
             else:
                 continue
-        result = ((classification.__len__()-equals)/classification.__len__())*100
+        result = ((classification.__len__() - equals) / classification.__len__()) * 100
         print("Total error: {:.2f}%".format(result))
 
     def classifyKernel(self, x):
@@ -194,7 +194,13 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return None
+        result = []
+        for x_index in range(x.shape[1]):
+            sum = 0
+            for i in range(self.lambdas.__len__()):
+                sum += self.sol_x[:,self.lambdas[i]]*self.sv_labels[:,i]*self.kernel(self.sv[:,i],x[:,x_index],self.kernelpar)
+            result.append(sum + self.bias)
+        return np.array(result)
 
     def printKernelClassificationError(self, x, y):
         '''
@@ -203,4 +209,14 @@ class SVM(object):
         :param y: Ground truth labels
         '''
         # TODO: Implement
+        classification = self.classifyKernel(x)
+        equals = 0
+        for i in range(classification.__len__()):
+            if (classification[i] > 0 and y[0, i] > 0):
+                equals += 1
+            elif (classification[i] < 0 and y[0, i] < 0):
+                equals += 1
+            else:
+                continue
+        result = ((classification.__len__() - equals) / classification.__len__()) * 100
         print("Total error: {:.2f}%".format(result))
