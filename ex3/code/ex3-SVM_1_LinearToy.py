@@ -36,7 +36,9 @@ def svmLinearToyExample():
     svm.printLinearClassificationError(toy_test_x,toy_test_label)
     print("Visualizing data")
     # TODO: Visualize data and separation function - hint: you can use the given "plot_linear_separator" and the "plot_data" functions
-    plot_linear_separator(plt,svm,-100,100)
+    plot_data(plt, toy_test_x, toy_test_label, [['red', '+'], ['blue', '_']])
+    plot_linear_separator(plt,svm,0,1)
+    plt.show()
 
 if __name__ == "__main__":
     print("Python version in use: ", sys.version)
