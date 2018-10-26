@@ -72,7 +72,7 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return None
+        return
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
@@ -85,6 +85,12 @@ class SVM(object):
 
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
+        dim = x.shape[0]
+        K = np.zeros(dim)
+        for i in range(dim):
+            for j in range(dim):
+                K[i,j] = kernelFunction(x[:,i],x[:,j],pars)
+
         return K
 
 
@@ -105,16 +111,16 @@ class SVM(object):
         # obtain the kernel
         if kernel == 'linear':
             print('Fitting SVM with linear kernel')
-            K = None
             self.kernel = self.__linearKernel__
+            K = self.__computeKernel__(x,self.kernel)
         elif kernel == 'poly':
             print('Fitting SVM with Polynomial kernel, order: {}'.format(kernelpar))
-            K = None
             self.kernel = self.__polynomialKernel__
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         elif kernel == 'rbf':
             print('Fitting SVM with RBF kernel, sigma: {}'.format(kernelpar))
-            K = None
             self.kernel = self.__gaussianKernel__
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         else:
             print('Fitting linear SVM')
             K = np.zeros(shape=(NUM, NUM))
@@ -131,9 +137,11 @@ class SVM(object):
             h = cvx.matrix(np.concatenate(np.zeros(NUM),np.ones(NUM)*self.C))
 
         P = cvx.matrix(np.zeros((NUM, NUM)))
+
         for i in range(NUM):
             for j in range(NUM):
                 P[i, j] = K[i, j] * np.dot(y[:, i], y[:, j])
+
         q = cvx.matrix(np.ones(NUM) * (-1))
         A = cvx.matrix(y)
         b = cvx.matrix(0.0)
