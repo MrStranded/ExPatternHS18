@@ -72,15 +72,15 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return np.dot(x1[0].T,x2[0])
+        return np.dot(x1,x2)
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return np.power(np.dot(x1[0].T,x2[0])+1, p)
+        return np.power(np.dot(x1,x2)+1, p)
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return np.exp(-np.power(norm(x1[0]-x2[0]),2)/(2*np.power(sigma,2)))
+        return np.exp(-np.power(norm(x1-x2),2)/(2*np.power(sigma,2)))
 
 
     def __computeKernel__(self, x, kernelFunction, pars):
@@ -148,12 +148,24 @@ class SVM(object):
 
         cvx.solvers.options["show_progress"] = False
         solution = cvx.solvers.qp(P, q, G, h, A, b)
-        self.sol_x = np.array(solution["x"]).transpose()
-        self.lambdas = np.flatnonzero(self.sol_x > self.__TOL)  # Only save > 0
+        sol_x = np.array(solution["x"]).transpose()
+        self.lambdas = np.flatnonzero(sol_x > self.__TOL)  # Only save > 0
+        self.sol_x = sol_x[:,self.lambdas]
         self.sv = x[:, self.lambdas]  # List of support vectors
         self.sv_labels = y[:, self.lambdas]  # List of labels for the support vectors (-1 or 1 for each support vector)
-        self.w = np.sum(self.sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
-        self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
+        self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
+        if (kernel == None):
+            self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
+        else:
+            wx = np.zeros(self.sv.shape[1])
+            for i in range(self.lambdas.__len__()):
+                kernelsum = 0
+
+                for j in range(self.sv.shape[0]):
+                    kernelsum += self.kernel(self.sv[:,i],self.sv[:,j],self.kernelpar)
+
+                wx += self.sol_x[0, i] * self.sv_labels[0, i] * kernelsum
+            self.bias = np.mean(self.sv_labels - wx)  # Bias
 
 
     def classifyLinear(self, x):
@@ -198,9 +210,9 @@ class SVM(object):
         for x_index in range(x.shape[1]):
             sum = 0
             for i in range(self.lambdas.__len__()):
-                sum += self.sol_x[:,self.lambdas[i]]*self.sv_labels[:,i]*self.kernel(self.sv[:,i],x[:,x_index],self.kernelpar)
+                sum += self.sol_x[:,i]*self.sv_labels[:,i]*self.kernel(self.sv[:,i],x[:,x_index],self.kernelpar)
             result.append(sum + self.bias)
-        return np.array(result)
+        return np.sign(np.array(result))
 
     def printKernelClassificationError(self, x, y):
         '''
