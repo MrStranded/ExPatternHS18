@@ -154,6 +154,7 @@ class SVM(object):
         self.sv = x[:, self.lambdas]  # List of support vectors
         self.sv_labels = y[:, self.lambdas]  # List of labels for the support vectors (-1 or 1 for each support vector)
         self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
+
         if (kernel == None):
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
         else:
