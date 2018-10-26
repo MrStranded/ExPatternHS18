@@ -80,7 +80,7 @@ class SVM(object):
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return np.exp(-np.power(norm(x1-x2),2)/(2*np.power(sigma,2)))
+        return np.exp(-np.power(norm(x1-x2),2) / (2*np.power(sigma,2)))
 
 
     def __computeKernel__(self, x, kernelFunction, pars):
@@ -103,9 +103,7 @@ class SVM(object):
         P = np.zeros((NUM, NUM))
         for i in range(NUM):
             for j in range(NUM):
-                val = y[0,i]*y[0,j] * np.dot(x[:,i], x[:,j])
-                P[i,j] = val
-        print(P)
+                P[i, j] = y[0,i]*y[0,j] * np.dot(x[:,i], x[:,j])
 
         # we'll solve the dual
         # obtain the kernel
@@ -128,6 +126,7 @@ class SVM(object):
             for i in range(NUM):
                 for j in range(NUM):
                     K[i, j] = np.dot(x[:, i], x[:, j])
+
         if self.C is None:
             G = cvx.matrix(-np.eye(NUM))
             h = cvx.matrix(np.zeros(NUM))
@@ -155,7 +154,7 @@ class SVM(object):
         self.sv_labels = y[:, self.lambdas]  # List of labels for the support vectors (-1 or 1 for each support vector)
         self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
 
-        if (kernel == None):
+        if (kernel is None):
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
         else:
             wx = np.zeros(self.sv.shape[1])
@@ -178,7 +177,7 @@ class SVM(object):
         # TODO: Implement
         result = []
         for i in range(x.shape[1]):
-            result.append(np.dot(np.array([self.w[:]]),x[:,i])+ self.bias)
+            result.append(np.dot(np.array([self.w[:]]),x[:,i]) + self.bias)
         return result
 
     def printLinearClassificationError(self, x, y):
@@ -225,9 +224,7 @@ class SVM(object):
         classification = self.classifyKernel(x)
         equals = 0
         for i in range(classification.__len__()):
-            if (classification[i] > 0 and y[0, i] > 0):
-                equals += 1
-            elif (classification[i] < 0 and y[0, i] < 0):
+            if (classification[i] * y[0, i] > 0):
                 equals += 1
             else:
                 continue
