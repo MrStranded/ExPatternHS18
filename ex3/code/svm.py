@@ -176,7 +176,7 @@ class SVM(object):
                 equals += 1
             else:
                 continue
-        result = (classification.__len__()-equals)/classification.__len__()
+        result = ((classification.__len__()-equals)/classification.__len__())*100
         print("Total error: {:.2f}%".format(result))
 
     def classifyKernel(self, x):
