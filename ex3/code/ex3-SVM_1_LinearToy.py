@@ -30,6 +30,7 @@ def svmLinearToyExample():
 
     print("Training error")
     # TODO: Compute training error of SVM - hint: use the printLinearClassificationError from the SVM class
+    svm.printLinearClassificationError(toy_train_x,toy_train_label)
     print("Test error")
     # TODO: Compute test error of SVM - hint: use the printLinearClassificationError from the SVM class
 

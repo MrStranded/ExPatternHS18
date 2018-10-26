@@ -155,7 +155,10 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return None
+        result = []
+        for i in range(x.shape[1]):
+            result.append(np.dot(np.array([self.w[:]]),x[:,i])+ self.bias)
+        return result
 
     def printLinearClassificationError(self, x, y):
         '''
@@ -164,7 +167,16 @@ class SVM(object):
         :param y: Ground truth labels
         '''
         # TODO: Implement
-        result = 128371289
+        classification = self.classifyLinear(x)
+        equals = 0
+        for i in range(classification.__len__()):
+            if (classification[i] > 0 and y[0,i] > 0):
+                equals += 1
+            elif (classification[i] < 0 and y[0,i] < 0):
+                equals += 1
+            else:
+                continue
+        result = (classification.__len__()-equals)/classification.__len__()
         print("Total error: {:.2f}%".format(result))
 
     def classifyKernel(self, x):
