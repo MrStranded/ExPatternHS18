@@ -127,8 +127,8 @@ class SVM(object):
             h = cvx.matrix(np.zeros(NUM))
         else:
             print("Using Slack variables")
-            G = cvx.matrix(np.concatenate(-np.eye(NUM), np.eye(NUM)))
-            h = cvx.matrix(np.concatenate(np.zeros(NUM),np.ones(NUM)*self.C))
+            G = cvx.matrix(np.concatenate((-np.eye(NUM), np.eye(NUM))))
+            h = cvx.matrix(np.concatenate((np.zeros(NUM), np.ones(NUM)*self.C)))
 
         P = cvx.matrix(np.zeros((NUM, NUM)))
         for i in range(NUM):
