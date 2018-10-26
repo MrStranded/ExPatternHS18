@@ -72,20 +72,20 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return
+        return np.dot(x1[:,0].T,x2[:,0])
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return None
+        return np.power(np.dot(x1[:,0].T,x2[:,0])+1, p)
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return None
+        return np.exp(-np.power(norm(x1[:,0]-x2[:,0]),2)/(2*np.power(sigma,2)))
 
 
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
-        dim = x.shape[0]
+        dim = x.shape[1]
         K = np.zeros(dim)
         for i in range(dim):
             for j in range(dim):
