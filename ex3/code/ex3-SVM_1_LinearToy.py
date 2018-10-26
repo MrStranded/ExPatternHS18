@@ -33,11 +33,10 @@ def svmLinearToyExample():
     svm.printLinearClassificationError(toy_train_x,toy_train_label)
     print("Test error")
     # TODO: Compute test error of SVM - hint: use the printLinearClassificationError from the SVM class
-
+    svm.printLinearClassificationError(toy_test_x,toy_test_label)
     print("Visualizing data")
     # TODO: Visualize data and separation function - hint: you can use the given "plot_linear_separator" and the "plot_data" functions
-
-
+    plot_linear_separator(plt,svm,-100,100)
 
 if __name__ == "__main__":
     print("Python version in use: ", sys.version)
