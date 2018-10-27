@@ -48,25 +48,37 @@ def svmMNIST(train, test):
     # TODO: Train svm
     C = None
     svm = SVM(C)
-    svm.train(train_x, train_label, 'linear', 2)
+    svm.train(train_x, train_label, 'linear', 1) # 'rbf' is taking forever to compute
+
+    # training predictions
+    predictions_train = svm.classifyKernel(train_x)
+    # testing predictions
+    predictions_test = svm.classifyKernel(test_x)
 
     print("Training error")
     # TODO: Compute training error of SVM
-    svm.printKernelClassificationError(train_x,train_label)
+    #svm.printKernelClassificationError(train_x,train_label) # we don't do that here because then we'd do the classification twice
     #svm.printLinearClassificationError(train_x,train_label)
+    dim = train_label.shape[1]
+    wrong = 0
+    for i in range(dim):
+        if train_label[0,i] * predictions_train[i,0] < 0:
+            wrong += 1
+    print("Train error: {:.2f}%".format(wrong/dim*100))
 
     print("Test error")
     # TODO: Compute test error of SVM
-    svm.printKernelClassificationError(test_x,test_label)
+    #svm.printKernelClassificationError(test_x,test_label)
     #svm.printLinearClassificationError(test_x,test_label)
+    dim = test_label.shape[1]
+    wrong = 0
+    for i in range(dim):
+        if test_label[0,i] * predictions_test[i,0] < 0:
+            wrong += 1
+    print("Test error: {:.2f}%".format(wrong/dim*100))
 
     # TODO: Visualize classification - correct and wrongly classified images
-    # training predictions
-    predictions_train = svm.classifyKernel(train_x)
     visualizeClassification(train_x, train_label, predictions_train, 2, "train")
-
-    # testing predictions
-    predictions_test = svm.classifyKernel(test_x)
     visualizeClassification(test_x, test_label, predictions_test, 2, "test")
 
     return svm

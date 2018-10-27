@@ -158,11 +158,12 @@ class SVM(object):
         if (kernel is None):
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
         else:
-            wx = np.zeros(self.sv.shape[1])
-            for i in range(self.lambdas.__len__()):
+            sv_num = self.sv.shape[1]
+            wx = np.zeros(sv_num)
+            for i in range(sv_num):
                 kernelsum = 0
 
-                for j in range(self.sv.shape[1]):
+                for j in range(sv_num):
                     kernelsum += self.kernel(self.sv[:,i],self.sv[:,j],self.kernelpar)
 
                 wx += self.sol_x[0, i] * self.sv_labels[0, i] * kernelsum
