@@ -17,6 +17,12 @@ def visualizeClassification(data, labels, predictions, num, name=''):
     :param name: Optional name of the plot
     '''
     # TODO: Implement visualization function
+    dim = data.shape[1]
+    for i in range(dim):
+        if labels[0,i] == predictions[i,0]:
+            print(i, "correct")
+        else:
+            print(i, "wrong!")
 
 
 def svmMNIST(train, test):
@@ -34,18 +40,28 @@ def svmMNIST(train, test):
     test_x     = test[1:,:].astype(np.double)
 
     # TODO: Train svm
-    svm = None
+    C = None
+    svm = SVM(C)
+    svm.train(train_x, train_label, 'linear', 2)
 
     print("Training error")
     # TODO: Compute training error of SVM
+    svm.printKernelClassificationError(train_x,train_label)
+    #svm.printLinearClassificationError(train_x,train_label)
 
     print("Test error")
     # TODO: Compute test error of SVM
-
+    svm.printKernelClassificationError(test_x,test_label)
+    #svm.printLinearClassificationError(test_x,test_label)
 
     # TODO: Visualize classification - correct and wrongly classified images
-    visualizeClassification(train_x, None)
-    visualizeClassification(test_x, None)
+    # training predictions
+    predictions_train = svm.classifyKernel(train_x)
+    visualizeClassification(train_x, train_label, predictions_train, 2)
+
+    # testing predictions
+    predictions_test = svm.classifyKernel(test_x)
+    visualizeClassification(test_x, test_label, predictions_test, 2)
 
     return svm
 

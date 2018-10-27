@@ -161,7 +161,7 @@ class SVM(object):
             for i in range(self.lambdas.__len__()):
                 kernelsum = 0
 
-                for j in range(self.sv.shape[0]):
+                for j in range(self.sv.shape[1]):
                     kernelsum += self.kernel(self.sv[:,i],self.sv[:,j],self.kernelpar)
 
                 wx += self.sol_x[0, i] * self.sv_labels[0, i] * kernelsum
@@ -226,7 +226,5 @@ class SVM(object):
         for i in range(classification.__len__()):
             if (classification[i] * y[0, i] > 0):
                 equals += 1
-            else:
-                continue
         result = ((classification.__len__() - equals) / classification.__len__()) * 100
         print("Total error: {:.2f}%".format(result))
