@@ -18,11 +18,15 @@ def visualizeClassification(data, labels, predictions, num, name=''):
     '''
     # TODO: Implement visualization function
     dim = data.shape[1]
+    correct = 0
+    wrong = 0
     for i in range(dim):
-        if labels[0,i] == predictions[i,0]:
-            print(i, "correct")
+        if labels[0,i] * predictions[i] > 0:
+            #print(i, "correct")
+            correct += 1
         else:
-            print(i, "wrong!")
+            #print(i, "wrong!")
+            wrong += 1
         '''
         What I'm doing makes no sense
         if i < num:
@@ -62,7 +66,7 @@ def svmMNIST(train, test):
     dim = train_label.shape[1]
     wrong = 0
     for i in range(dim):
-        if train_label[0,i] * predictions_train[i,0] < 0:
+        if train_label[0,i] * predictions_train[i] < 0:
             wrong += 1
     print("Train error: {:.2f}%".format(wrong/dim*100))
 
@@ -73,7 +77,7 @@ def svmMNIST(train, test):
     dim = test_label.shape[1]
     wrong = 0
     for i in range(dim):
-        if test_label[0,i] * predictions_test[i,0] < 0:
+        if test_label[0,i] * predictions_test[i] < 0:
             wrong += 1
     print("Test error: {:.2f}%".format(wrong/dim*100))
 
