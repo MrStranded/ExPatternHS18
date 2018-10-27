@@ -76,12 +76,21 @@ class SVM(object):
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return np.power(np.dot(x1,x2)+1, p)
+        return np.power(np.dot(x1.T,x2)+1, p)
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return np.exp(-np.power(norm(x1-x2),2) / (2*np.power(sigma,2)))
+        # This vile distinction is necessary to serve the different ways in which __computeKernerl__() is called
+        # Normally x2 has the shape (256), but in the calculation for the bias it is (256,1663) ... :P
+        if x2.shape.__len__() == 1:
+            return np.exp(-np.power(norm(x1 - x2), 2) / (2 * np.power(sigma, 2)))
+        else:
+            dx = np.tile(x1.reshape((x1.shape[0], 1)), (1, x2.shape[1])) - x2
+            return np.exp(-(np.power(norm(dx, axis=0), 2) / (2 * np.power(sigma, 2))))
 
+        #dx = x1 - x2 #np.tile(x1.reshape((x1.shape[0], 1)), (1, x1.shape[0])) - x2
+        #return np.exp(-(np.power(norm(dx, axis=0), 2) / (2 * np.power(sigma, 2))))
+        #return np.exp(-np.power(norm(x1-x2),2) / (2*np.power(sigma,2)))
 
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
@@ -178,7 +187,6 @@ class SVM(object):
             for i in range(self.lambdas.shape[1]):
                 wx += self.lambdas[0, i] * self.sv_labels[0, i] * self.kernel(self.sv[:, i], self.sv, self.kernelpar)
             self.bias = np.mean(self.sv_labels - wx)  # Bias
-
 
     def classifyLinear(self, x):
         '''

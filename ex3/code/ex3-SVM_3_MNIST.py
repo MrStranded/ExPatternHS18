@@ -52,7 +52,38 @@ def svmMNIST(train, test):
     # TODO: Train svm
     C = None
     svm = SVM(C)
-    svm.train(train_x, train_label, 'linear', 1) # 'rbf' is taking forever to compute
+    svm.train(train_x, train_label, 'rbf', 10) # 'rbf' is taking forever to compute
+
+    '''
+    Results for rbf with different sigma values:
+    sigma = 0.1:
+        13:
+            Number of support vectors: 1663
+            Train error: 0.00%
+            Test error: 38.60%
+        38:
+            Number of support vectors: 1200
+            Train error: 0.00%
+            Test error: 50.00%
+    sigma = 1:
+        13:
+            Number of support vectors: 870
+            Train error: 0.00%
+            Test error: 6.05%
+        38:
+            Number of support vectors: 1200
+            Train error: 0.00%
+            Test error: 48.80%
+    sigma = 10:
+        13:
+            Number of support vectors: 32
+            Train error: 0.00%
+            Test error: 0.70%
+        38:
+            Number of support vectors: 114
+            Train error: 0.00%
+            Test error: 2.71%
+    '''
 
     # training predictions
     predictions_train = svm.classifyKernel(train_x)
