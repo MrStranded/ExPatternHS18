@@ -17,15 +17,15 @@ def svmLinearToyExample():
     '''
     Results for C values:
     C = None:
-        Test error: 13.51%, 2 SVs
+        Test error: 13.51%, 3 SVs
     C = 1:
-        Test error: 16.22%, 2 SVs
+        Test error: 16.22%, 29 SVs
     C = 10:
-        Test error: 5.41%, 2 SVs
+        Test error: 5.41%, 13 SVs
     C = 100:
-        Test error: 10.81%, 2 SVs
+        Test error: 10.81%, 3 SVs
     C = 1000:
-        Test error: 13.51%, 2 SVs
+        Test error: 13.51%, 3 SVs
     '''
 
     toy = scipy.io.loadmat('../data/toy.mat')

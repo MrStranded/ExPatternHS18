@@ -149,10 +149,11 @@ class SVM(object):
         solution = cvx.solvers.qp(P, q, G, h, A, b)
         sol_x = np.array(solution["x"]).transpose()
         self.lambdas = np.flatnonzero(sol_x > self.__TOL)  # Only save > 0
-        self.sol_x = sol_x[:,self.lambdas]
+        self.sol_x = sol_x[:, self.lambdas]
         self.sv = x[:, self.lambdas]  # List of support vectors
         self.sv_labels = y[:, self.lambdas]  # List of labels for the support vectors (-1 or 1 for each support vector)
         self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
+        print("Number of support vectors:",self.sv.shape[1])
 
         if (kernel is None):
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias

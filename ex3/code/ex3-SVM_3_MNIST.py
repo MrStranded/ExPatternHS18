@@ -3,7 +3,7 @@ import math
 import numpy as np
 import scipy.io
 import matplotlib.pyplot as plt
-from svm import SVM
+from svm import SVM, plot_data, plot_linear_separator
 
 
 
@@ -23,6 +23,12 @@ def visualizeClassification(data, labels, predictions, num, name=''):
             print(i, "correct")
         else:
             print(i, "wrong!")
+        '''
+        What I'm doing makes no sense
+        if i < num:
+            plot_data(plt, data, labels, [['red', '+'], ['blue', '_']])
+            plt.show()
+        '''
 
 
 def svmMNIST(train, test):
@@ -57,11 +63,11 @@ def svmMNIST(train, test):
     # TODO: Visualize classification - correct and wrongly classified images
     # training predictions
     predictions_train = svm.classifyKernel(train_x)
-    visualizeClassification(train_x, train_label, predictions_train, 2)
+    visualizeClassification(train_x, train_label, predictions_train, 2, "train")
 
     # testing predictions
     predictions_test = svm.classifyKernel(test_x)
-    visualizeClassification(test_x, test_label, predictions_test, 2)
+    visualizeClassification(test_x, test_label, predictions_test, 2, "test")
 
     return svm
 
