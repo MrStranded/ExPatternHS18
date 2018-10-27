@@ -14,6 +14,19 @@ def svmLinearToyExample():
      - Plot data and separator
     '''
     C = 10
+    '''
+    Results for C values:
+    C = None:
+        Test error: 13.51%, 2 SVs
+    C = 1:
+        Test error: 16.22%, 2 SVs
+    C = 10:
+        Test error: 5.41%, 2 SVs
+    C = 100:
+        Test error: 10.81%, 2 SVs
+    C = 1000:
+        Test error: 13.51%, 2 SVs
+    '''
 
     toy = scipy.io.loadmat('../data/toy.mat')
     toy_train = toy['toy_train']
