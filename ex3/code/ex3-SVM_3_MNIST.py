@@ -18,21 +18,73 @@ def visualizeClassification(data, labels, predictions, num, name=''):
     '''
     # TODO: Implement visualization function
     dim = data.shape[1]
+    image_side_length = np.sqrt(len(data[:,0])).astype(np.int64)
+    fig = plt.figure(figsize=(8, 8))
+    plt.title(name)
     correct = 0
     wrong = 0
+
+    row_image_correct = []
+    row_image_correct_temp = []
+    row_image_wrong = []
+    row_image_wrong_temp = []
+
     for i in range(dim):
-        if labels[0,i] * predictions[i] > 0:
+        img = np.array(data[:, i]).reshape(image_side_length, image_side_length)
+        if labels[0, i] == predictions[i]:
             #print(i, "correct")
             correct += 1
+            if len(row_image_correct_temp ) == 0:
+                row_image_correct_temp = img
+            else:
+                row_image_correct_temp = np.concatenate((row_image_correct_temp, img), axis=1)
+                if np.mod(correct,image_side_length) == 0:
+                    if len(row_image_correct) == 0:
+                        row_image_correct = row_image_correct_temp
+                    else:
+                        row_image_correct = np.concatenate((row_image_correct, row_image_correct_temp),axis=0)
+                    row_image_correct_temp = []
         else:
             #print(i, "wrong!")
             wrong += 1
-        '''
-        What I'm doing makes no sense
-        if i < num:
-            plot_data(plt, data, labels, [['red', '+'], ['blue', '_']])
-            plt.show()
-        '''
+            if len(row_image_wrong_temp) == 0:
+                row_image_wrong_temp = img
+            else:
+                row_image_wrong_temp = np.concatenate((row_image_wrong_temp, img), axis=1)
+                if np.mod(wrong,image_side_length) == 0:
+                    if len(row_image_wrong) == 0:
+                        row_image_wrong = row_image_wrong_temp
+                    else:
+                        row_image_wrong = np.concatenate((row_image_wrong, row_image_wrong_temp), axis=0)
+                    row_image_wrong_temp = []
+
+    empty = np.array(np.zeros((image_side_length, image_side_length)))
+    n, k = row_image_correct_temp.shape
+    k = int(np.subtract(image_side_length, np.divide(k,16)))
+    # Fill the image row up with empty images
+    if k != 0:
+        for i in range(k):
+            row_image_correct_temp = np.concatenate((row_image_correct_temp, empty), axis=1)
+        row_image_correct = np.concatenate((row_image_correct, row_image_correct_temp), axis=0)
+
+    n, k = row_image_wrong_temp.shape
+    k = int(np.subtract(image_side_length, np.divide(k, 16)))
+    # Fill the image row up with empty images
+    if k != 0:
+        for i in range(k):
+            row_image_wrong_temp = np.concatenate((row_image_wrong_temp, empty), axis=1)
+        if len(row_image_wrong) == 0:
+            row_image_wrong = row_image_wrong_temp
+        else:
+            row_image_wrong = np.concatenate((row_image_wrong, row_image_correct_temp), axis=0)
+
+    fig.add_subplot(1, 2, 1).set_title("Correct Classification")
+    plt.imshow(row_image_correct)
+    if len(row_image_wrong) != 0:
+        fig.add_subplot(1, 2, 2).set_title("Wrong Classification")
+        plt.imshow(row_image_wrong)
+    plt.axis('off')
+    plt.show()
 
 
 def svmMNIST(train, test):
@@ -52,7 +104,7 @@ def svmMNIST(train, test):
     # TODO: Train svm
     C = 1000
     svm = SVM(C)
-    svm.train(train_x, train_label, 'rbf', 10) # 'rbf' is taking forever to compute
+    svm.train(train_x, train_label, 'poly') # 'rbf' is taking forever to compute
 
     '''
     Results for rbf with different sigma values:
@@ -141,8 +193,7 @@ def svmMNIST(train, test):
     print("Test error: {:.2f}%".format(wrong/dim*100))
 
     # TODO: Visualize classification - correct and wrongly classified images
-    visualizeClassification(train_x, train_label, predictions_train, 2, "train")
-    visualizeClassification(test_x, test_label, predictions_test, 2, "test")
+    visualizeClassification(test_x, test_label, predictions_test, 2, "Test classification")
 
     return svm
 
