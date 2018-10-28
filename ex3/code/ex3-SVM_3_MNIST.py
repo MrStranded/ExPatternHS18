@@ -50,7 +50,7 @@ def svmMNIST(train, test):
     test_x     = test[1:,:].astype(np.double)
 
     # TODO: Train svm
-    C = None
+    C = 1000
     svm = SVM(C)
     svm.train(train_x, train_label, 'rbf', 10) # 'rbf' is taking forever to compute
 
@@ -81,6 +81,34 @@ def svmMNIST(train, test):
             Test error: 0.70%
         38:
             Number of support vectors: 114
+            Train error: 0.00%
+            Test error: 2.71%
+    -------------------------------- different values for C
+    sigma = 10 and C = 1:
+        13:
+            Number of support vectors: 69
+            Train error: 0.06%
+            Test error: 0.70%
+        38:
+            Number of support vectors: 267
+            Train error: 1.00%
+            Test error: 3.92%
+    sigma = 10 and C = 10:
+        13:
+            Number of support vectors: 33
+            Train error: 0.00%
+            Test error: 0.70%
+        38:
+            Number of support vectors: 135
+            Train error: 0.08%
+            Test error: 2.71%
+    sigma = 10 and C = 100: (C = 1000 gives same result)
+        13:
+            Number of support vectors: 31
+            Train error: 0.00%
+            Test error: 0.70%
+        38:
+            Number of support vectors: 117
             Train error: 0.00%
             Test error: 2.71%
     '''
