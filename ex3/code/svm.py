@@ -88,10 +88,6 @@ class SVM(object):
             dx = np.tile(x1.reshape((x1.shape[0], 1)), (1, x2.shape[1])) - x2
             return np.exp(-(np.power(norm(dx, axis=0), 2) / (2 * np.power(sigma, 2))))
 
-        #dx = x1 - x2 #np.tile(x1.reshape((x1.shape[0], 1)), (1, x1.shape[0])) - x2
-        #return np.exp(-(np.power(norm(dx, axis=0), 2) / (2 * np.power(sigma, 2))))
-        #return np.exp(-np.power(norm(x1-x2),2) / (2*np.power(sigma,2)))
-
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
         dim = x.shape[1]
@@ -164,7 +160,6 @@ class SVM(object):
         print("Number of support vectors:",self.sv.shape[1])
 
         if (kernel is None):
-            #self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
             self.w = np.sum(self.lambdas * self.sv_labels * self.sv, axis=1)  # SVM weights
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
         else:
