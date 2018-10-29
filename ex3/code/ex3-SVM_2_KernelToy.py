@@ -32,7 +32,7 @@ def svmKernelToyExample():
     svm.printKernelClassificationError(toy_test_x,toy_test_label)
     print("Visualizing data")
     # TODO: Visualize data and separation boundary - hint: you can use the given "plot_kernel_separator" and the "plot_data" functions
-    plot_data(plt, toy_test_x, toy_test_label, [['red', '+'], ['blue', '_']])
+    plot_data(plt, toy_test_x, toy_test_label, [['blue', '+'], ['red', '_']])
     plot_kernel_separator(plt, svm, 0, 1)
     plt.show()
 

@@ -157,13 +157,10 @@ class SVM(object):
         cvx.solvers.options["show_progress"] = False
         solution = cvx.solvers.qp(P, q, G, h, A, b)
         sol_x = np.array(solution["x"]).transpose()
-        #self.lambdas = np.flatnonzero(sol_x > self.__TOL)  # Only save > 0
         self.lambda_indices = np.flatnonzero(sol_x > self.__TOL)
         self.lambdas = sol_x[:, self.lambda_indices]  # Only save > 0
-        #self.sol_x = sol_x[:, self.lambdas]
         self.sv = x[:, self.lambda_indices]  # List of support vectors
         self.sv_labels = y[:, self.lambda_indices]  # List of labels for the support vectors (-1 or 1 for each support vector)
-        #self.w = np.sum(sol_x[:, self.lambdas] * self.sv_labels * self.sv, axis=1)  # SVM weights
         print("Number of support vectors:",self.sv.shape[1])
 
         if (kernel is None):
@@ -171,18 +168,6 @@ class SVM(object):
             self.w = np.sum(self.lambdas * self.sv_labels * self.sv, axis=1)  # SVM weights
             self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
         else:
-            '''
-            sv_num = self.sv.shape[1]
-            wx = np.zeros(sv_num)
-            for i in range(sv_num):
-                kernelsum = 0
-
-                for j in range(sv_num):
-                    kernelsum += self.kernel(self.sv[:,i],self.sv[:,j],self.kernelpar)
-
-                wx += self.sol_x[0, i] * self.sv_labels[0, i] * kernelsum
-            self.bias = np.mean(self.sv_labels - wx)  # Bias
-            '''
             wx = np.zeros(self.sv.shape[1])
             for i in range(self.lambdas.shape[1]):
                 wx += self.lambdas[0, i] * self.sv_labels[0, i] * self.kernel(self.sv[:, i], self.sv, self.kernelpar)
@@ -226,15 +211,6 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        '''
-        result = []
-        for x_index in range(x.shape[1]):
-            sum = 0
-            for i in range(self.lambdas.__len__()):
-                sum += self.sol_x[:,i]*self.sv_labels[:,i]*self.kernel(self.sv[:,i],x[:,x_index],self.kernelpar)
-            result.append(sum + self.bias)
-        return np.sign(np.array(result))
-        '''
         t = np.zeros(x.shape[1])
         for i in range(self.lambdas.shape[1]):
             t += self.lambdas[0, i] * self.sv_labels[0, i] * self.kernel(self.sv[:, i], x, self.kernelpar)
