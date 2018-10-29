@@ -79,11 +79,11 @@ def visualizeClassification(data, labels, predictions, num, name=''):
             row_image_wrong = np.concatenate((row_image_wrong, row_image_correct_temp), axis=0)
 
     fig.add_subplot(1, 2, 1).set_title("Correct Classification")
-    plt.imshow(row_image_correct)
+    plt.imshow(row_image_correct, cmap='gray')
     if len(row_image_wrong) != 0:
         fig.add_subplot(1, 2, 2).set_title("Wrong Classification")
-        plt.imshow(row_image_wrong)
-    plt.axis('off')
+        plt.imshow(row_image_wrong, cmap='gray')
+    plt.axis('off', cmap='gray')
     plt.show()
 
 
