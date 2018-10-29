@@ -46,7 +46,7 @@ def svmSpeedComparison():
 
     print('Linear SVM timing: \n {:.10f} over {} runs'.format(result_linear, numOfRuns))
     print('SVM with linear kernel timing: \n {:.10f} over {} runs'.format(result_kernel, numOfRuns))
-    print('Linear is {} times faster'.format(result_kernel/result_linear))
+    print('Linear kernel is {} times faster'.format(result_linear/result_kernel))
     # kernel is about 10 times faster
     # maybe because in kernel case, only support vectors are considered,
     # whereas in linear case, we go through each data point
