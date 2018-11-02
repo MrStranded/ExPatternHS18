@@ -99,7 +99,8 @@ class LOGREG(object):
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
         cost = 0
-        regularizationTerm = None
+        cost = self.activationFunction(theta,X)
+        regularizationTerm = 0
         return cost + regularizationTerm
 
 
