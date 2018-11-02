@@ -85,7 +85,7 @@ class LOGREG(object):
 
     def activationFunction(self, theta, X):
         # TODO: Implement logistic function
-        return ???
+        return None
 
 
     def _costFunction(self, theta, X, y):
@@ -98,7 +98,7 @@ class LOGREG(object):
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
         cost = 0
-        regularizationTerm = ???
+        regularizationTerm = None
         return cost + regularizationTerm
 
 
@@ -111,8 +111,8 @@ class LOGREG(object):
         :return: first derivative of the model parameters
         '''
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
-        firstDerivative = ???
-        regularizationTerm = ???
+        firstDerivative = None
+        regularizationTerm = None
         return firstDerivative + regularizationTerm
 
 
@@ -123,8 +123,8 @@ class LOGREG(object):
         :return: the hessian matrix (second derivative of the model parameters)
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
-        hessian = ???
-        regularizationTerm = ???
+        hessian = None
+        regularizationTerm = None
         return (- hessian + regularizationTerm)
 
 
@@ -164,6 +164,7 @@ class LOGREG(object):
         :return: List of classification values (0.0 or 1.0)
         '''
         # TODO: Implement classification function for each entry in the data matrix
+        predictions = None
         return predictions
 
 
@@ -175,5 +176,7 @@ class LOGREG(object):
         '''
         # TODO: Implement print classification
         N = X.shape[1]
-
+        # TODO: change the values!
+        totalError = 128397
+        numOfMissclassified = 1238
         print("Total error: {:.2f}%, {}/{} misclassified".format(totalError, numOfMissclassified, N))
