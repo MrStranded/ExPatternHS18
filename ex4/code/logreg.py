@@ -85,7 +85,8 @@ class LOGREG(object):
 
     def activationFunction(self, theta, X):
         # TODO: Implement logistic function
-        return None
+        # Maybe its 1/(1 + np.exp(-(theta.T * X) + theta))
+        return 1/(1 + np.exp(-(theta.T * X)))
 
 
     def _costFunction(self, theta, X, y):
