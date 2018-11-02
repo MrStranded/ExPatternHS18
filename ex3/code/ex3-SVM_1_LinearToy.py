@@ -13,7 +13,20 @@ def svmLinearToyExample():
      - Print training and test error
      - Plot data and separator
     '''
-    C = None
+    C = 10
+    '''
+    Results for C values:
+    C = None:
+        Test error: 13.51%, 3 SVs
+    C = 1:
+        Test error: 16.22%, 29 SVs
+    C = 10:
+        Test error: 5.41%, 13 SVs
+    C = 100:
+        Test error: 10.81%, 3 SVs
+    C = 1000:
+        Test error: 13.51%, 3 SVs
+    '''
 
     toy = scipy.io.loadmat('../data/toy.mat')
     toy_train = toy['toy_train']
@@ -30,13 +43,15 @@ def svmLinearToyExample():
 
     print("Training error")
     # TODO: Compute training error of SVM - hint: use the printLinearClassificationError from the SVM class
+    svm.printLinearClassificationError(toy_train_x,toy_train_label)
     print("Test error")
     # TODO: Compute test error of SVM - hint: use the printLinearClassificationError from the SVM class
-
+    svm.printLinearClassificationError(toy_test_x,toy_test_label)
     print("Visualizing data")
     # TODO: Visualize data and separation function - hint: you can use the given "plot_linear_separator" and the "plot_data" functions
-
-
+    plot_data(plt, toy_test_x, toy_test_label, [['red', '+'], ['blue', '_']])
+    plot_linear_separator(plt,svm,0,1)
+    plt.show()
 
 if __name__ == "__main__":
     print("Python version in use: ", sys.version)

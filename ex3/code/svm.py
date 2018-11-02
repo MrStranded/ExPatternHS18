@@ -72,19 +72,30 @@ class SVM(object):
 
     def __linearKernel__(self, x1, x2, _):
         # TODO: Implement linear kernel function
-        return ???
+        return np.dot(x1,x2)
 
     def __polynomialKernel__(self, x1, x2, p):
         # TODO: Implement polynomial kernel function
-        return ???
+        return np.power(np.dot(x1.T,x2)+1, p)
 
     def __gaussianKernel__(self, x1, x2, sigma):
         # TODO: Implement gaussian kernel function
-        return ???
-
+        # This vile distinction is necessary to serve the different ways in which __computeKernerl__() is called
+        # Normally x2 has the shape (256), but in the calculation for the bias it is (256,1663) ... :P
+        if x2.shape.__len__() == 1:
+            return np.exp(-np.power(norm(x1 - x2), 2) / (2 * np.power(sigma, 2)))
+        else:
+            dx = np.tile(x1.reshape((x1.shape[0], 1)), (1, x2.shape[1])) - x2
+            return np.exp(-(np.power(norm(dx, axis=0), 2) / (2 * np.power(sigma, 2))))
 
     def __computeKernel__(self, x, kernelFunction, pars):
         # TODO: Implement function to compute the kernel matrix
+        dim = x.shape[1]
+        K = np.zeros((dim,dim))
+        for i in range(dim):
+            for j in range(dim):
+                K[i,j] = kernelFunction(x[:,i],x[:,j],pars)
+
         return K
 
 
@@ -94,40 +105,68 @@ class SVM(object):
 
         NUM = x.shape[1]
 
+        P = np.zeros((NUM, NUM))
+        for i in range(NUM):
+            for j in range(NUM):
+                P[i, j] = y[0,i]*y[0,j] * np.dot(x[:,i], x[:,j])
+
         # we'll solve the dual
         # obtain the kernel
         if kernel == 'linear':
             print('Fitting SVM with linear kernel')
-            K = ???
             self.kernel = self.__linearKernel__
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         elif kernel == 'poly':
             print('Fitting SVM with Polynomial kernel, order: {}'.format(kernelpar))
-            K = ???
             self.kernel = self.__polynomialKernel__
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         elif kernel == 'rbf':
             print('Fitting SVM with RBF kernel, sigma: {}'.format(kernelpar))
-            K = ???
             self.kernel = self.__gaussianKernel__
+            K = self.__computeKernel__(x,self.kernel,kernelpar)
         else:
             print('Fitting linear SVM')
-            K = ???
+            K = np.zeros(shape=(NUM, NUM))
+
+            for i in range(NUM):
+                for j in range(NUM):
+                    K[i, j] = np.dot(x[:, i], x[:, j])
 
         if self.C is None:
-            G = ???
-            h = ???
+            G = cvx.matrix(-np.eye(NUM))
+            h = cvx.matrix(np.zeros(NUM))
         else:
             print("Using Slack variables")
-            G = ???
-            h = ???
+            G = cvx.matrix(np.concatenate((-np.eye(NUM), np.eye(NUM))))
+            h = cvx.matrix(np.concatenate((np.zeros(NUM), np.ones(NUM)*self.C)))
 
+        P = cvx.matrix(np.zeros((NUM, NUM)))
 
-        # TODO: Compute below values according to the lecture slides
-        self.lambdas = None # Only save > 0
-        self.w = None # SVM weights
-        self.sv = None # List of support vectors
-        self.sv_labels = None # List of labels for the support vectors (-1 or 1 for each support vector)
-        self.bias = None # Bias
+        for i in range(NUM):
+            for j in range(NUM):
+                P[i, j] = K[i, j] * np.dot(y[:, i], y[:, j])
 
+        q = cvx.matrix(np.ones(NUM) * (-1))
+        A = cvx.matrix(y)
+        b = cvx.matrix(0.0)
+
+        cvx.solvers.options["show_progress"] = False
+        solution = cvx.solvers.qp(P, q, G, h, A, b)
+        sol_x = np.array(solution["x"]).transpose()
+        self.lambda_indices = np.flatnonzero(sol_x > self.__TOL)
+        self.lambdas = sol_x[:, self.lambda_indices]  # Only save > 0
+        self.sv = x[:, self.lambda_indices]  # List of support vectors
+        self.sv_labels = y[:, self.lambda_indices]  # List of labels for the support vectors (-1 or 1 for each support vector)
+        print("Number of support vectors:",self.sv.shape[1])
+
+        if (kernel is None):
+            self.w = np.sum(self.lambdas * self.sv_labels * self.sv, axis=1)  # SVM weights
+            self.bias = np.mean(self.sv_labels - self.w.dot(self.sv))  # Bias
+        else:
+            wx = np.zeros(self.sv.shape[1])
+            for i in range(self.lambdas.shape[1]):
+                wx += self.lambdas[0, i] * self.sv_labels[0, i] * self.kernel(self.sv[:, i], self.sv, self.kernelpar)
+            self.bias = np.mean(self.sv_labels - wx)  # Bias
 
     def classifyLinear(self, x):
         '''
@@ -136,7 +175,10 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return ???
+        result = []
+        for i in range(x.shape[1]):
+            result.append(np.dot(np.array([self.w[:]]),x[:,i]) + self.bias)
+        return result
 
     def printLinearClassificationError(self, x, y):
         '''
@@ -145,6 +187,16 @@ class SVM(object):
         :param y: Ground truth labels
         '''
         # TODO: Implement
+        classification = self.classifyLinear(x)
+        equals = 0
+        for i in range(classification.__len__()):
+            if (classification[i] > 0 and y[0, i] > 0):
+                equals += 1
+            elif (classification[i] < 0 and y[0, i] < 0):
+                equals += 1
+            else:
+                continue
+        result = ((classification.__len__() - equals) / classification.__len__()) * 100
         print("Total error: {:.2f}%".format(result))
 
     def classifyKernel(self, x):
@@ -154,7 +206,10 @@ class SVM(object):
         :return: List of classification values (-1.0 or 1.0)
         '''
         # TODO: Implement
-        return ???
+        t = np.zeros(x.shape[1])
+        for i in range(self.lambdas.shape[1]):
+            t += self.lambdas[0, i] * self.sv_labels[0, i] * self.kernel(self.sv[:, i], x, self.kernelpar)
+        return np.sign(t + self.bias)
 
     def printKernelClassificationError(self, x, y):
         '''
@@ -163,4 +218,10 @@ class SVM(object):
         :param y: Ground truth labels
         '''
         # TODO: Implement
+        classification = self.classifyKernel(x)
+        equals = 0
+        for i in range(classification.__len__()):
+            if (classification[i] * y[0, i] > 0):
+                equals += 1
+        result = ((classification.__len__() - equals) / classification.__len__()) * 100
         print("Total error: {:.2f}%".format(result))
