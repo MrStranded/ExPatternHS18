@@ -130,7 +130,7 @@ class LOGREG(object):
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
         hessian = 0
         for i in range(len(X)):
-            hessian += X[:,i]*X[:,i].T * self.activationFunction(theta,X[:,i])*(1-self.activationFunction(theta,X[:,i]))
+            hessian += X[:,i]*X[:,i].T * (self.activationFunction(theta,X[:,i])*(1-self.activationFunction(theta,X[:,i])))[0,0]
         regularizationTerm = 0
         return (- hessian + regularizationTerm)
 
