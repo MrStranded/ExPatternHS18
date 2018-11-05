@@ -99,7 +99,8 @@ class LOGREG(object):
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
         cost = 0
-        cost = self.activationFunction(theta,X)
+        for i in range(len(y)):
+            cost += y[i]*np.log(self.activationFunction(theta, X)) + (1-y[i])*np.log(1-self.activationFunction(theta, X))
         regularizationTerm = 0
         return cost + regularizationTerm
 

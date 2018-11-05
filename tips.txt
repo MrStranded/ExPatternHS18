@@ -13,7 +13,7 @@ Logistic Regression:
         slide 27: weight parameters
         Hessian matrix: slide 30 = 3x3 in toy example
         we do not need to use the minus
-    + iterative algortithm
+    + iterative algorithm
     regularization:
         prevents overfitting: choose the simplest function
         cost function: 35: norm of w
