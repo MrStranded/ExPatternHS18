@@ -114,8 +114,10 @@ class LOGREG(object):
         :return: first derivative of the model parameters
         '''
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
-        firstDerivative = None
-        regularizationTerm = None
+        firstDerivative = 0
+        for i in range(len(y)):
+            firstDerivative += y[i]*X[i].T - ((np.exp(theta.T * X[i]) * X[i].T) / (1 + np.exp(theta.T * X[i])))
+        regularizationTerm = 0
         return firstDerivative + regularizationTerm
 
 
@@ -126,6 +128,7 @@ class LOGREG(object):
         :return: the hessian matrix (second derivative of the model parameters)
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
+
         hessian = None
         regularizationTerm = None
         return (- hessian + regularizationTerm)
