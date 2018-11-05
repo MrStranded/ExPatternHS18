@@ -176,7 +176,7 @@ class LOGREG(object):
         :return: List of classification values (0.0 or 1.0)
         '''
         # TODO: Implement classification function for each entry in the data matrix
-        predictions = None
+        predictions = self.activationFunction(self.theta,X)
         return predictions
 
 
@@ -189,6 +189,11 @@ class LOGREG(object):
         # TODO: Implement print classification
         N = X.shape[1]
         # TODO: change the values!
-        totalError = 128397
-        numOfMissclassified = 1238
+        predictions = self.classify(X)
+        numOfMissclassified = 0
+        for i in range(N):
+            if (predictions[:,i] <= 0.5 and y[i] == 1) or (predictions[:,i] > 0.5 and y[i] == 0):
+                numOfMissclassified +=1
+        totalError = (numOfMissclassified/N)*100
+
         print("Total error: {:.2f}%, {}/{} misclassified".format(totalError, numOfMissclassified, N))
