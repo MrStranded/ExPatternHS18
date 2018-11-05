@@ -149,8 +149,9 @@ class LOGREG(object):
             theta = theta - np.linalg.inv(self._calculateHessian(theta, X)) * self._calculateDerivative(theta, X, y).T
             loglikelihood = 0
             for i in range(len(y)):
-                loglikelihood += int(y[:, i]) * theta.T * X[:, i] - np.log(1+np.exp(theta.T, X[:, i]))
-            print(loglikelihood)
+                loglikelihood += int(y[:, i]) * theta.T * X[:, i] - np.log(1+np.exp(theta.T * X[:, i]))
+            if loglikelihood < self._threshold:
+                break
         return theta
         # note maximize likelihood (should become larger and closer to 1), maximize loglikelihood( should get less negative and closer to zero)
 
