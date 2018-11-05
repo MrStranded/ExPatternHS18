@@ -194,6 +194,7 @@ class LOGREG(object):
         # TODO: Implement print classification
         N = X.shape[1]
         # TODO: change the values!
+        #these values work for theta = [[  31.70588548],[-311.65489048],[ 203.27934418]]
         predictions = self.classify(X)
         numOfMissclassified = 0
         for i in range(N):
