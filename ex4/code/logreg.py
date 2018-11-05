@@ -116,7 +116,7 @@ class LOGREG(object):
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
         firstDerivative = 0
         for i in range(len(y)):
-            firstDerivative += y[i]*X[i].T - ((np.exp(theta.T * X[i]) * X[i].T) / (1 + np.exp(theta.T * X[i])))
+            firstDerivative += y[i]*X[:,i].T - ((np.exp(theta.T * X[:,i]) * X[:,i].T) / (1 + np.exp(theta.T * X[:,i])))
         regularizationTerm = 0
         return firstDerivative + regularizationTerm
 
@@ -129,8 +129,8 @@ class LOGREG(object):
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
         hessian = 0
-        for i in range(X):
-            hessian += X[i]*X[i].T * self.activationFunction(theta,X[i])*(1-self.activationFunction(theta,X[i]))
+        for i in range(len(X)):
+            hessian += X[:,i]*X[:,i].T * self.activationFunction(theta,X[:,i])*(1-self.activationFunction(theta,X[:,i]))
         regularizationTerm = 0
         return (- hessian + regularizationTerm)
 
@@ -145,8 +145,8 @@ class LOGREG(object):
         '''
         # TODO: Implement Iterative Reweighted Least Squares algorithm for optimization, use the calculateDerivative and calculateHessian functions you have already defined above
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
-
-
+        for n in range(niterations):
+            theta = theta - np.linalg.inv(self._calculateHessian(theta, X)) * self._calculateDerivative(theta, X, y)
         return theta
         # note maximize likelihood (should become larger and closer to 1), maximize loglikelihood( should get less negative and closer to zero)
 
