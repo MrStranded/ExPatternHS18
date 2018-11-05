@@ -146,7 +146,11 @@ class LOGREG(object):
         # TODO: Implement Iterative Reweighted Least Squares algorithm for optimization, use the calculateDerivative and calculateHessian functions you have already defined above
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
         for n in range(niterations):
-            theta = theta - np.linalg.inv(self._calculateHessian(theta, X)) * self._calculateDerivative(theta, X, y).T
+            hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
+            hessianinverse[0,0] = 0
+            deriv = self._calculateDerivative(theta, X, y)
+            deriv[:,0] = 0
+            theta = theta - hessianinverse * deriv.T
             loglikelihood = 0
             for i in range(len(y)):
                 loglikelihood += int(y[:, i]) * theta.T * X[:, i] - np.log(1+np.exp(theta.T * X[:, i]))
