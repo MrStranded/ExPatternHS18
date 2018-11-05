@@ -115,7 +115,7 @@ class LOGREG(object):
         '''
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
         firstDerivative = 0
-        for i in range(len(y)):
+        for i in range(y.shape[1]):
             firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
         regularizationTerm = 0
         return firstDerivative + regularizationTerm
@@ -129,7 +129,7 @@ class LOGREG(object):
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
         hessian = 0
-        for i in range(len(X)):
+        for i in range(X.shape[1]):
             hessian += X[:,i]*X[:,i].T * (self.activationFunction(theta,X[:,i])*(1-self.activationFunction(theta,X[:,i])))[0,0]
         regularizationTerm = 0
         return (- hessian + regularizationTerm)
@@ -147,9 +147,10 @@ class LOGREG(object):
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
         for n in range(niterations):
             hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
-            hessianinverse[0,0] = 0
+            hessianinverse[:,0] = 0
+            hessianinverse[0,:] = 0
             deriv = self._calculateDerivative(theta, X, y)
-            deriv[:,0] = 0
+            deriv[:,0] = 1
             theta = theta - hessianinverse * deriv.T
             loglikelihood = 0
             for i in range(len(y)):
