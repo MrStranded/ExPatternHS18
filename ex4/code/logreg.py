@@ -128,9 +128,10 @@ class LOGREG(object):
         :return: the hessian matrix (second derivative of the model parameters)
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
-
-        hessian = None
-        regularizationTerm = None
+        hessian = 0
+        for i in range(X):
+            hessian += X[i]*X[i].T * self.activationFunction(theta,X[i])*(1-self.activationFunction(theta,X[i]))
+        regularizationTerm = 0
         return (- hessian + regularizationTerm)
 
 
