@@ -2,6 +2,7 @@ import numpy as np
 import math
 import glob
 import re
+from nltk.corpus import stopwords
 
 
 class wordCounter(object):
@@ -40,6 +41,33 @@ class naiveBayes(object):
         files = sorted(glob.glob(msgDirectory + fileFormat))
         # TODO: Train the naive bayes classifier
         # TODO: Hint - store the dictionary as a list of 'wordCounter' objects
+        self.logPrior = ()
+        self.dictionary = []
+        for file in files:
+            file_opened = open(file, 'r')
+            string = file_opened.read()
+            string = self._extractWords(string)
+            stop_words = set(stopwords.words('english'))
+            string = [w for w in string if not w in stop_words]
+            for item in string:
+                index = -1
+                temp_word_counter = wordCounter(word=item, pos=0, neg=0, p=0)
+                for i in range(len(self.dictionary)):
+                    if self.dictionary[i].word == item:
+                        index = i
+                        temp_word_counter = self.dictionary[i]
+
+                if file.startswith('s'):
+                    temp_word_counter.pos += 1
+                else:
+                    temp_word_counter.neg += 1
+
+                temp_word_counter.p += 1
+                if index > -1:
+                    self.dictionary[index] = temp_word_counter
+                else:
+                    self.dictionary.append(temp_word_counter)
+
         return (self.dictionary, self.logPrior)
 
 
