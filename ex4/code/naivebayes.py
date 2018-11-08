@@ -41,32 +41,65 @@ class naiveBayes(object):
         files = sorted(glob.glob(msgDirectory + fileFormat))
         # TODO: Train the naive bayes classifier
         # TODO: Hint - store the dictionary as a list of 'wordCounter' objects
-        self.logPrior = ()
-        self.dictionary = []
+        self.dictionary = list()
+        self.spam_list = list()
+        self.ham_list = list()
+        num_spam_mails = 0
+        num_ham_mails = 0
+
+        stop_words = set(stopwords.words('english'))
+
         for file in files:
-            file_opened = open(file, 'r')
-            string = file_opened.read()
-            string = self._extractWords(string)
-            stop_words = set(stopwords.words('english'))
-            string = [w for w in string if not w in stop_words]
-            for item in string:
-                index = -1
-                temp_word_counter = wordCounter(word=item, pos=0, neg=0, p=0)
-                for i in range(len(self.dictionary)):
-                    if self.dictionary[i].word == item:
-                        index = i
-                        temp_word_counter = self.dictionary[i]
+            file_content = open(file)
+            words = self._extractWords(file_content.read())
+            words_cleaned = [value for value in words if value not in stop_words]
 
-                if file.startswith('s'):
-                    temp_word_counter.pos += 1
-                else:
-                    temp_word_counter.neg += 1
 
-                temp_word_counter.p += 1
-                if index > -1:
-                    self.dictionary[index] = temp_word_counter
-                else:
-                    self.dictionary.append(temp_word_counter)
+            if 'spmsga' in file:
+                # Spam mail
+                for word in words_cleaned:
+                    not_found = True
+                    for counter in self.dictionary:
+                        if counter.word == word:
+                            counter.neg += 1
+                            not_found = False
+
+                    if not_found:
+                        word_counter = wordCounter(word,0,1,0)
+                        self.dictionary.append(word_counter)
+                        self.spam_list.append(word_counter)
+                num_spam_mails += 1
+            else:
+                # ham mail
+                for word in words_cleaned:
+                    not_found = True
+                    for counter in self.dictionary:
+                        if counter.word == word:
+                            counter.pos += 1
+                            not_found = False
+
+                    if not_found:
+                        word_counter = wordCounter(word,1,0,0)
+                        self.dictionary.append(word_counter)
+                        self.ham_list.append(word_counter)
+
+                num_ham_mails += 1
+
+        # Update the relative frequency of a word w in the training set
+        num_spam_words = 0
+        num_ham_words = 0
+        for word_counter in self.dictionary:
+            num_spam_words += word_counter.neg
+            num_ham_words += word_counter.pos
+
+        for word_counter in self.dictionary:
+            posterior_ham = (word_counter.pos+1)/num_ham_words
+            posterior_spam = (word_counter.neg+1)/num_spam_words
+            word_counter.p = np.log(posterior_spam/posterior_ham)
+
+        prior_ham = num_ham_mails/len(files)
+        prior_spam = num_spam_mails/len(files)
+        self.logPrior = np.log(prior_spam/prior_ham)
 
         return (self.dictionary, self.logPrior)
 
