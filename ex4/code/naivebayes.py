@@ -101,6 +101,9 @@ class naiveBayes(object):
         prior_spam = num_spam_mails/len(files)
         self.logPrior = np.log(prior_spam/prior_ham)
 
+        self.dictionary.sort(key=lambda x: np.abs(x.p), reverse=True)
+        self.spam_list.sort(key=lambda x: np.abs(x.p), reverse=True)
+        self.ham_list.sort(key=lambda x: np.abs(x.p), reverse=True)
         return (self.dictionary, self.logPrior)
 
 
@@ -113,6 +116,16 @@ class naiveBayes(object):
 
         txt = np.array(self._extractWords(message))
         # TODO: Implement classification function
+        score = self.logPrior
+        for word in txt:
+            for word_counter in self.dictionary[:nFeatures]:
+                if word_counter.word == word:
+                    score += word_counter.p
+
+        if score < 0:
+            return False
+        else:
+            return True
 
 
     def classifyAndEvaluateAllInFolder(self, msgDirectory, nFeatures, fileFormat='*.txt'):
@@ -126,24 +139,45 @@ class naiveBayes(object):
         ncorr = 0   # Number of falsely classified messages
         # TODO: Classify each email found in the given directory and figure out if they are correctly or falsely classified
         # TODO: Hint - look at the filenames to figure out the ground truth label
+        for file in files:
+            spam = self.classify(open(file).read(),nFeatures)
+            if 'spmsga' in file and spam:
+                corr += 1
+            elif 'spmsga' not in file and not spam:
+                corr += 1
+            else:
+                ncorr += 1
         return corr/(corr+ncorr)
 
 
     def printMostPopularSpamWords(self, num):
         print("{} most popular SPAM words:".format(num))
         # TODO: print the 'num' most used SPAM words from the dictionary
+        self.spam_list.sort(key=lambda x: x.neg, reverse=True)
+        for word in self.spam_list[:num]:
+            print(word.word)
+        self.spam_list.sort(key=lambda x: np.abs(x.p), reverse=True)
+
 
 
     def printMostPopularHamWords(self, num):
         print("{} most popular HAM words:".format(num))
         # TODO: print the 'num' most used HAM words from the dictionary
+        self.ham_list.sort(key=lambda x: x.pos, reverse=True)
+        for word in self.ham_list[:num]:
+            print(word.word)
+        self.ham_list.sort(key=lambda x: np.abs(x.p), reverse=True)
 
 
     def printMostindicativeSpamWords(self, num):
         print("{} most distinct SPAM words:".format(num))
         # TODO: print the 'num' most indicative SPAM words from the dictionary
+        for word in self.spam_list[:num]:
+            print(word.word)
 
 
     def printMostindicativeHamWords(self, num):
         print("{} most distinct HAM words:".format(num))
         # TODO: print the 'num' most indicative HAM words from the dictionary
+        for word in self.ham_list[:num]:
+            print(word.word)
