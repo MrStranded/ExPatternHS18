@@ -181,7 +181,7 @@ class LOGREG(object):
         '''
         # TODO: Implement classification function for each entry in the data matrix
         predictions = self.activationFunction(self.theta,X)
-        return predictions
+        return np.array(predictions)
 
 
     def printClassification(self, X, y):
