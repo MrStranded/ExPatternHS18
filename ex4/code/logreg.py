@@ -148,10 +148,7 @@ class LOGREG(object):
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
         for n in range(niterations):
             hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
-            #hessianinverse[:,0] = 0
-            #hessianinverse[0,:] = 0
             deriv = self._calculateDerivative(theta, X, y)
-            #deriv[:,0] = 1
             theta -= hessianinverse * deriv.T
             loglikelihood = 0
             for i in range(len(y)):
