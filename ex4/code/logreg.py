@@ -130,9 +130,10 @@ class LOGREG(object):
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
         hessian = 0
         for i in range(X.shape[1]):
-            hessian += X[:,i]*X[:,i].T * (self.activationFunction(theta,X[:,i])*(1-self.activationFunction(theta,X[:,i])))[0,0]
+            squashedDistance = self.activationFunction(theta,X[:,i])
+            hessian += X[:,i]*X[:,i].T * (squashedDistance * (1 - squashedDistance))[0,0]
         regularizationTerm = 0
-        return (- hessian + regularizationTerm)
+        return -hessian + regularizationTerm
 
 
     def _optimizeNewtonRaphson(self, X, y, niterations):
@@ -147,15 +148,16 @@ class LOGREG(object):
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
         for n in range(niterations):
             hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
-            hessianinverse[:,0] = 0
-            hessianinverse[0,:] = 0
+            #hessianinverse[:,0] = 0
+            #hessianinverse[0,:] = 0
             deriv = self._calculateDerivative(theta, X, y)
-            deriv[:,0] = 1
-            theta = theta - hessianinverse * deriv.T
+            #deriv[:,0] = 1
+            theta -= hessianinverse * deriv.T
             loglikelihood = 0
             for i in range(len(y)):
-                loglikelihood += int(y[:, i]) * theta.T * X[:, i] - np.log(1+np.exp(theta.T * X[:, i]))
-            if loglikelihood < self._threshold:
+                distance = theta.T * X[:, i]
+                loglikelihood += y[:, i] * distance - np.log(1 + np.exp(distance))
+            if abs(loglikelihood) < self._threshold:
                 break
         return theta
         # note maximize likelihood (should become larger and closer to 1), maximize loglikelihood( should get less negative and closer to zero)
