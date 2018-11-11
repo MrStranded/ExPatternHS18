@@ -98,11 +98,15 @@ class LOGREG(object):
         :return: cost
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
+        # TODO: 2. Implement regularization
         cost = 0
+        if self.r != 0:
+            regularization_term = np.sqrt(1/2*self.r)
+        else:
+            regularization_term = 0
         for i in range(len(y)):
             cost += y[i]*np.log(self.activationFunction(theta, X[:,i])) + (1-y[i])*np.log(1-self.activationFunction(theta, X[:,i]))
-        regularizationTerm = 0
-        return cost + regularizationTerm
+        return cost + regularization_term
 
 
     def _calculateDerivative(self, theta, X, y):
@@ -114,9 +118,11 @@ class LOGREG(object):
         :return: first derivative of the model parameters
         '''
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
+        # TODO: 2. Implement regularization
         firstDerivative = 0
         for i in range(y.shape[1]):
             firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
+            print(self.r)
         regularizationTerm = 0
         return firstDerivative + regularizationTerm
 
@@ -128,6 +134,7 @@ class LOGREG(object):
         :return: the hessian matrix (second derivative of the model parameters)
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
+        # TODO: 2. Implement regularization
         hessian = 0
         for i in range(X.shape[1]):
             squashedDistance = self.activationFunction(theta,X[:,i])
