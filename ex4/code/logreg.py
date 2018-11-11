@@ -106,6 +106,7 @@ class LOGREG(object):
             regularization_term = 0
         for i in range(len(y)):
             cost += y[i]*np.log(self.activationFunction(theta, X[:,i])) + (1-y[i])*np.log(1-self.activationFunction(theta, X[:,i]))
+
         return cost + regularization_term
 
 
@@ -123,9 +124,12 @@ class LOGREG(object):
         for i in range(y.shape[1]):
             firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
             print(self.r)
-        regularizationTerm = 0
-        return firstDerivative + regularizationTerm
-
+        if self.r != 0:
+            regularization_term = np.sqrt(1/2*self.r)
+        else:
+            regularization_term = 0
+        return np.insert(firstDerivative[0, 1:] + regularization_term, 0, firstDerivative[0, 0])
+        #return firstDerivative
 
     def _calculateHessian(self, theta,  X):
         '''
