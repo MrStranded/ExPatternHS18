@@ -102,7 +102,6 @@ class LOGREG(object):
         cost = 0
         for i in range(len(y)):
             cost += y[i]*np.log(self.activationFunction(theta, X[:,i])) + (1-y[i])*np.log(1-self.activationFunction(theta, X[:,i]))
-
         regularization_term = -self.r * np.sum(np.power(theta, 2))
         return cost + regularization_term
 
