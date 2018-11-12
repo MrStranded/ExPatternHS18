@@ -85,7 +85,6 @@ class LOGREG(object):
 
     def activationFunction(self, theta, X):
         # TODO: Implement logistic function
-        # Maybe its 1/(1 + np.exp(-(theta.T * X) + theta))
         return 1/(1 + np.exp(-(theta.T * X)))
 
 
@@ -99,9 +98,8 @@ class LOGREG(object):
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
         # TODO: 2. Implement regularization
-        cost = 0
-        for i in range(len(y)):
-            cost += y[i]*np.log(self.activationFunction(theta, X[:,i])) + (1-y[i])*np.log(1-self.activationFunction(theta, X[:,i]))
+        p = self.activationFunction(theta,X)
+        cost = np.sum(np.log(np.extract(y > 0.5, p))) + np.sum(np.log(1 - np.extract(y <= 0.5, p)))
         regularization_term = -self.r * np.sum(np.power(theta, 2))
         return cost + regularization_term
 
@@ -148,15 +146,13 @@ class LOGREG(object):
         '''
         # TODO: Implement Iterative Reweighted Least Squares algorithm for optimization, use the calculateDerivative and calculateHessian functions you have already defined above
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
+        pre_cost = self._costFunction(theta,X,y)
         for n in range(niterations):
             hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
             deriv = self._calculateDerivative(theta, X, y)
             theta -= hessianinverse * deriv.T
-            loglikelihood = 0
-            for i in range(len(y)):
-                distance = theta.T * X[:, i]
-                loglikelihood += y[:, i] * distance - np.log(1 + np.exp(distance))
-            if abs(loglikelihood) < self._threshold:
+            current_cost = self._costFunction(theta,X,y)
+            if abs(current_cost-pre_cost) < self._threshold:
                 break
         return theta
         # note maximize likelihood (should become larger and closer to 1), maximize loglikelihood( should get less negative and closer to zero)
@@ -195,7 +191,6 @@ class LOGREG(object):
         # TODO: Implement print classification
         N = X.shape[1]
         # TODO: change the values!
-        #these values work for theta = [[  31.70588548],[-311.65489048],[ 203.27934418]]
         predictions = self.classify(X)
         numOfMissclassified = 0
         for i in range(N):
