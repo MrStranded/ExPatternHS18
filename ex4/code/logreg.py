@@ -100,13 +100,10 @@ class LOGREG(object):
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
         # TODO: 2. Implement regularization
         cost = 0
-        if self.r != 0:
-            regularization_term = np.sqrt(1/2*self.r)
-        else:
-            regularization_term = 0
         for i in range(len(y)):
             cost += y[i]*np.log(self.activationFunction(theta, X[:,i])) + (1-y[i])*np.log(1-self.activationFunction(theta, X[:,i]))
 
+        regularization_term = -self.r * np.sum(np.power(theta, 2))
         return cost + regularization_term
 
 
@@ -123,13 +120,8 @@ class LOGREG(object):
         firstDerivative = 0
         for i in range(y.shape[1]):
             firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
-            print(self.r)
-        if self.r != 0:
-            regularization_term = np.sqrt(1/2*self.r)
-        else:
-            regularization_term = 0
-        return np.insert(firstDerivative[0, 1:] + regularization_term, 0, firstDerivative[0, 0])
-        #return firstDerivative
+        regularization_term = -2 * self.r * theta.T
+        return firstDerivative + regularization_term
 
     def _calculateHessian(self, theta,  X):
         '''
@@ -143,7 +135,7 @@ class LOGREG(object):
         for i in range(X.shape[1]):
             squashedDistance = self.activationFunction(theta,X[:,i])
             hessian += X[:,i]*X[:,i].T * (squashedDistance * (1 - squashedDistance))[0,0]
-        regularizationTerm = 0
+        regularizationTerm = -2 * self.r * np.eye(theta.shape[0])
         return -hessian + regularizationTerm
 
 
