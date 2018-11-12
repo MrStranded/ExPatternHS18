@@ -118,6 +118,7 @@ class LOGREG(object):
         for i in range(y.shape[1]):
             firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
         regularization_term = -2 * self.r * theta.T
+        regularization_term[0] = 0
         return firstDerivative + regularization_term
 
     def _calculateHessian(self, theta,  X):
@@ -133,6 +134,7 @@ class LOGREG(object):
             squashedDistance = self.activationFunction(theta,X[:,i])
             hessian += X[:,i]*X[:,i].T * (squashedDistance * (1 - squashedDistance))[0,0]
         regularizationTerm = -2 * self.r * np.eye(theta.shape[0])
+        regularizationTerm[0,0] = 0
         return -hessian + regularizationTerm
 
 
