@@ -1,0 +1,12 @@
+tips:
+
+- we need to find many vectors and matrices (H, P, ...)
+- maximise margin. computation: cvxopt. lamda is distance
+- soft margin: slack variables (C)
+
+K = xi * xj.T * yi * yj
+K: matrix (NxN)
+
+- non-linear svm:
+- phi function has to be guessed (?)
+- kernel trick: first calculate kernel, then projection into more dimensions
