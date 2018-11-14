@@ -85,7 +85,7 @@ class LOGREG(object):
 
     def activationFunction(self, theta, X):
         # TODO: Implement logistic function
-        return ???
+        return 1/(1 + np.exp(-(theta.T * X)))
 
 
     def _costFunction(self, theta, X, y):
@@ -97,9 +97,11 @@ class LOGREG(object):
         :return: cost
         '''
         # TODO: Implement equation of cost function for posterior p(y=1|X,w)
-        cost = 0
-        regularizationTerm = ???
-        return cost + regularizationTerm
+        # TODO: 2. Implement regularization
+        p = self.activationFunction(theta,X)
+        cost = np.sum(np.log(np.extract(y > 0.5, p))) + np.sum(np.log(1 - np.extract(y <= 0.5, p)))
+        regularization_term = -self.r * np.sum(np.power(theta, 2))
+        return cost + regularization_term
 
 
     def _calculateDerivative(self, theta, X, y):
@@ -111,10 +113,13 @@ class LOGREG(object):
         :return: first derivative of the model parameters
         '''
         # TODO: Calculate derivative of loglikelihood function for posterior p(y=1|X,w)
-        firstDerivative = ???
-        regularizationTerm = ???
-        return firstDerivative + regularizationTerm
-
+        # TODO: 2. Implement regularization
+        firstDerivative = 0
+        for i in range(y.shape[1]):
+            firstDerivative += (y[:,i]-self.activationFunction(theta, X[:,i])) * X[:,i].T
+        regularization_term = -2 * self.r * theta.T
+        regularization_term[0] = 0
+        return firstDerivative + regularization_term
 
     def _calculateHessian(self, theta,  X):
         '''
@@ -123,9 +128,14 @@ class LOGREG(object):
         :return: the hessian matrix (second derivative of the model parameters)
         '''
         # TODO: Calculate Hessian matrix of loglikelihood function for posterior p(y=1|X,w)
-        hessian = ???
-        regularizationTerm = ???
-        return (- hessian + regularizationTerm)
+        # TODO: 2. Implement regularization
+        hessian = 0
+        for i in range(X.shape[1]):
+            squashedDistance = self.activationFunction(theta,X[:,i])
+            hessian += X[:,i]*X[:,i].T * (squashedDistance * (1 - squashedDistance))[0,0]
+        regularizationTerm = -2 * self.r * np.eye(theta.shape[0])
+        regularizationTerm[0,0] = 0
+        return -hessian + regularizationTerm
 
 
     def _optimizeNewtonRaphson(self, X, y, niterations):
@@ -138,8 +148,14 @@ class LOGREG(object):
         '''
         # TODO: Implement Iterative Reweighted Least Squares algorithm for optimization, use the calculateDerivative and calculateHessian functions you have already defined above
         theta = np.matrix(np.zeros((X.shape[0], 1))) # Initializing the theta vector as a numpy matrix class instance
-
-
+        pre_cost = self._costFunction(theta,X,y)
+        for n in range(niterations):
+            hessianinverse = np.linalg.inv(self._calculateHessian(theta, X))
+            deriv = self._calculateDerivative(theta, X, y)
+            theta -= hessianinverse * deriv.T
+            current_cost = self._costFunction(theta,X,y)
+            if abs(current_cost-pre_cost) < self._threshold:
+                break
         return theta
         # note maximize likelihood (should become larger and closer to 1), maximize loglikelihood( should get less negative and closer to zero)
 
@@ -164,7 +180,8 @@ class LOGREG(object):
         :return: List of classification values (0.0 or 1.0)
         '''
         # TODO: Implement classification function for each entry in the data matrix
-        return predictions
+        predictions = self.activationFunction(self.theta,X)
+        return np.array(predictions)
 
 
     def printClassification(self, X, y):
@@ -175,5 +192,12 @@ class LOGREG(object):
         '''
         # TODO: Implement print classification
         N = X.shape[1]
+        # TODO: change the values!
+        predictions = self.classify(X)
+        numOfMissclassified = 0
+        for i in range(N):
+            if (predictions[:,i] <= 0.5 and y[i] == 1) or (predictions[:,i] > 0.5 and y[i] == 0):
+                numOfMissclassified +=1
+        totalError = (numOfMissclassified/N)*100
 
         print("Total error: {:.2f}%, {}/{} misclassified".format(totalError, numOfMissclassified, N))

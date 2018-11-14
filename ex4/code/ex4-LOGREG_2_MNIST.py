@@ -20,7 +20,10 @@ def figurePlotting(imgarray, N, name='', random=True):
     for i in range(0, N * N):
         imgIndex = i
         if random:
-            imgIndex = np.random.randint(low=0, high=imgarray.shape[1])
+            high = imgarray.shape[1]
+            if high == 0:
+                continue
+            imgIndex = np.random.randint(low=0, high=high)
         img = np.reshape(imgarray[:, imgIndex], (16, 16))
         plt.subplot(N, N, i + 1)
         plt.imshow(img, cmap='gray')
