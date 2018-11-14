@@ -1,0 +1,9 @@
+plyfile==0.6
+plotly==3.3.0
+imageio==2.3.0
+matplotlib==2.2.3
+numpy==1.15.1
+scipy==1.1.0
+pandas==0.23.4
+jupyter==1.0.0
+
