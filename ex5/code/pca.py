@@ -3,14 +3,15 @@ import matplotlib.pyplot as plt
 import math
 import json
 
+
 class PCA():
     '''
     Principal Component Analysis
     Specify maximum number of components in the construction (__init__)
     '''
-    def __init__(self, maxComponents = -1):
-        self._maxComponents = maxComponents
 
+    def __init__(self, maxComponents=-1):
+        self._maxComponents = maxComponents
 
     def plot_pca(self, X, maxxplot=200):
         """
@@ -22,10 +23,12 @@ class PCA():
         # Take random subset from X for plotting (max 200)
         scat = X[:, np.random.permutation(np.min((maxxplot, X.shape[1])))]
         plt.scatter(scat[0, :], scat[1, :])
-        plt.quiver(self.mu[0], self.mu[1], self.U[0, 0] * vec1len, self.U[0, 1] * vec1len, angles='xy', scale_units='xy', scale=1)
-        plt.quiver(self.mu[0], self.mu[1], self.U[1, 0] * vec2len, self.U[1, 1] * vec2len, angles='xy', scale_units='xy', scale=1)
+        plt.quiver(self.mu[0], self.mu[1], self.U[0, 0] * vec1len, self.U[0, 1] * vec1len, angles='xy',
+                   scale_units='xy', scale=1)
+        plt.quiver(self.mu[0], self.mu[1], self.U[1, 0] * vec2len, self.U[1, 1] * vec2len, angles='xy',
+                   scale_units='xy', scale=1)
         plt.grid()
-
+        plt.axis('equal')
 
     def train(self, X):
         '''
@@ -35,7 +38,9 @@ class PCA():
         :param X: Training data
         '''
         # TODO: Implement PCA mean (mu), principal components (U) and variance (S) of the given data (X)
-        mu = np.mean(X,axis=1)
+        mu = (np.mean(X, axis=1)).reshape((2, 1))
+        mu_expanded = np.outer(mu, np.ones(X.shape[1]))
+        X = X - mu_expanded
         u, s, vh = np.linalg.svd(X, full_matrices=False)
         if self._maxComponents == -1:
             # Use all principal components
@@ -43,33 +48,28 @@ class PCA():
         else:
             # only use self._maxComponents
             m = self._maxComponents
-            s[m:] = 0
-            u[:, m:] = 0
+            s = s[:m]
+            u = u[:,:m]
         # nxm matrix which stores m principal components
         # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
         # principal component
         self.mu = mu
-        self.U  = u
-        self.S  = s
+        self.U = u
+        self.S = s
         return (mu, self.U, self.S)
-
-
-
 
     def to_pca(self, X):
         '''
         :param X: Data to be projected into PCA space
         :return: alpha - feature vector
         '''
-        #TODO: Exercise 1
+        # TODO: Exercise 1
         # Move center of mass to origin
         # Build data matrix, from mean free data
-        dataOrigin = X
-        for i in range(X.shape[1]):
-            dataOrigin[:, i] -= self.mu
-        alpha = np.dot(dataOrigin.T,self.U)
+        mu_expanded = np.outer(self.mu, np.ones(X.shape[1]))
+        X = X - mu_expanded
+        alpha = np.dot(self.U, X)
         return alpha
-
 
     def from_pca(self, alpha):
         '''
@@ -77,11 +77,10 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
-        Xout =  np.dot(alpha.T,self.U.T)
-        for i in range(alpha.shape[1]):
-            Xout[:,i] += self.mu
+        Xout = np.dot(self.U.T, alpha)
+        mu_expanded = np.outer(self.mu, np.ones(alpha.shape[1]))
+        Xout = Xout + mu_expanded
         return Xout
-
 
     def project(self, X, k):
         '''
@@ -91,6 +90,7 @@ class PCA():
         '''
         # TODO: Exercise 1
         self._maxComponents = k
-        self.train(X)
         x_projected = self.to_pca(X)
+        x_projected[k:,:] = 0
+        x_projected = self.from_pca(x_projected)
         return x_projected
