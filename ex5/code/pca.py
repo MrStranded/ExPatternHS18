@@ -45,15 +45,14 @@ class PCA():
             # only use self._maxComponents
             m = self._maxComponents
             # TODO: do something with the u and s
+            s = s[:m]
         # nxm matrix which stores m principal components
-        U = u
         # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
         # principal component
-        S = s
         self.mu = mu
-        self.U  = U
-        self.S  = S
-        return (mu, U, S)
+        self.U  = u[:,:m]
+        self.S  = s
+        return (mu, self.U, self.S)
 
 
 
@@ -66,7 +65,11 @@ class PCA():
         #TODO: Exercise 1
         # Move center of mass to origin
         # Build data matrix, from mean free data
-        dataOrigin = np.subtract(X,self.mu)
+        dataOrigin = X
+        alpha = np.zeros((len(self.S), X.shape[1]))
+        for i in range(X.shape[1]):
+            dataOrigin[:,i] -= self.mu
+            alpha[i] = dataOrigin[:,i] * self.U
         alpha = 1
         return alpha
 
