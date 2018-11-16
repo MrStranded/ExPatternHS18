@@ -40,17 +40,16 @@ class PCA():
         if self._maxComponents == -1:
             # Use all principal components
             m = s.shape[0]
-            # TODO: do something with the u and s
         else:
             # only use self._maxComponents
             m = self._maxComponents
-            # TODO: do something with the u and s
             s = s[:m]
+            u = u[:, :m]
         # nxm matrix which stores m principal components
         # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
         # principal component
         self.mu = mu
-        self.U  = u[:,:m]
+        self.U  = u
         self.S  = s
         return (mu, self.U, self.S)
 
