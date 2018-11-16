@@ -14,12 +14,18 @@ def toyExample():
     # TODO: Train PCA
     pca = PCA(-1)
     pca.train(data)
-    Xout = pca.project(data, 1)
 
-    print("Variance")
+    print("Variance of the data")
     # TODO 1.2: Compute data variance to the S vector computed by the PCA
-    data_variance = np.var(pca.S)
+    data_variance = np.var(data,axis=1)
+    print(data_variance)
+    print(pca.S)
     # TODO 1.3: Compute data variance for the projected data (into 1D) to the S vector computed by the PCA
+    Xout = pca.project(data, 1)
+    print("Variance of the projected data")
+    data_variance = np.var(Xout,axis=1)
+    print(data_variance)
+    print(pca.S)
 
 
     plt.figure()
