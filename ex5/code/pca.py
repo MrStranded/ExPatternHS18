@@ -34,7 +34,22 @@ class PCA():
         NOTE: Remember to set svd(, full_matrices=False)!!!
         :param X: Training data
         '''
-        #TODO: Implement PCA mean (mu), principal components (U) and variance (S) of the given data (X)
+        # TODO: Implement PCA mean (mu), principal components (U) and variance (S) of the given data (X)
+        mu = np.mean(X,axis=1)
+        u, s, vh = np.linalg.svd(X, full_matrices=False)
+        if self._maxComponents == -1:
+            # Use all principal components
+            m = s.shape[0]
+            # TODO: do something with the u and s
+        else:
+            # only use self._maxComponents
+            m = self._maxComponents
+            # TODO: do something with the u and s
+        # nxm matrix which stores m principal components
+        U = u
+        # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
+        # principal component
+        S = s
         self.mu = mu
         self.U  = U
         self.S  = S
@@ -49,6 +64,10 @@ class PCA():
         :return: alpha - feature vector
         '''
         #TODO: Exercise 1
+        # Move center of mass to origin
+        # Build data matrix, from mean free data
+        dataOrigin = np.subtract(X,self.mu)
+        alpha = 1
         return alpha
 
 
@@ -58,6 +77,7 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
+        Xout = 1
         return Xout
 
 
@@ -68,4 +88,5 @@ class PCA():
         :return: projected data (x
         '''
         # TODO: Exercise 1
+        x_projected = 1
         return x_projected
