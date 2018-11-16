@@ -43,8 +43,8 @@ class PCA():
         else:
             # only use self._maxComponents
             m = self._maxComponents
-            s = s[:m]
-            u = u[:, :m]
+            s[m:] = 0
+            u[:, m:] = 0
         # nxm matrix which stores m principal components
         # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
         # principal component
@@ -67,7 +67,7 @@ class PCA():
         dataOrigin = X
         for i in range(X.shape[1]):
             dataOrigin[:, i] -= self.mu
-        alpha = dataOrigin * self.U
+        alpha = np.dot(dataOrigin.T,self.U)
         return alpha
 
 
@@ -77,7 +77,7 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
-        Xout = alpha * self.U.T
+        Xout =  np.dot(alpha.T,self.U.T)
         for i in range(alpha.shape[1]):
             Xout[:,i] += self.mu
         return Xout
