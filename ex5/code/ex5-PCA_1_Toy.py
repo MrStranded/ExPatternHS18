@@ -12,7 +12,7 @@ def toyExample():
     data = mat['toy_data']
 
     # TODO: Train PCA
-    pca = ???
+    pca = '???'
 
 
     print("Variance")

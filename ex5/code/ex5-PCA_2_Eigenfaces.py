@@ -14,7 +14,7 @@ def euclideanDistance(a, b):
     :param b: vector
     :return: scalar
     '''
-    return ???
+    return '???'
 
 # TODO: Implement mahalanobis distance between two vectors
 def mahalanobisDistance(a, b, invS):
@@ -24,7 +24,7 @@ def mahalanobisDistance(a, b, invS):
     :param invS: matrix
     :return: scalar
     '''
-    return ???
+    return '???'
 
 
 def faceRecognition():

@@ -17,9 +17,9 @@ def renderRandomFace(faces, pca, num):
     # TODO 3.2: Implement missing functionality
     print('Render {} random faces'.format(num))
     for i in range(0,num):
-        face = ???
+        face = '???'
         # TODO: Render face with the renderFace function
-        renderFace(???)
+        renderFace('???')
 
 
 def lowRankApproximation(faces, pca):
@@ -33,9 +33,9 @@ def lowRankApproximation(faces, pca):
     face = faces.getMesh(2)[:,None]
     for i in range(1, len(pca.S)):
         print(' - Approximation to : {} components'.format(i))
-        projection = ???
+        projection = '???'
         # TODO: Render face with the renderFace function
-        renderFace(???)
+        renderFace('???')
 
 
 def faces3DExample():
@@ -54,7 +54,7 @@ def faces3DExample():
 
     renderFace(faces.getMesh(2), faces.triangulation, name="Vetter")
     # TODO 3.1: Train PCA with the 3D face dataset
-    pca = ???
+    pca = '???'
 
     renderRandomFace(faces, pca, 3)
 
