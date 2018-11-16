@@ -65,11 +65,9 @@ class PCA():
         # Move center of mass to origin
         # Build data matrix, from mean free data
         dataOrigin = X
-        alpha = np.zeros((len(self.S), X.shape[1]))
         for i in range(X.shape[1]):
-            dataOrigin[:,i] -= self.mu
-            alpha[i] = dataOrigin[:,i] * self.U
-        alpha = 1
+            dataOrigin[:, i] -= self.mu
+        alpha = dataOrigin * self.U
         return alpha
 
 
@@ -79,7 +77,9 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
-        Xout = 1
+        Xout = alpha * self.U.T
+        for i in range(alpha.shape[1]):
+            Xout[:,i] += self.mu
         return Xout
 
 
@@ -90,5 +90,7 @@ class PCA():
         :return: projected data (x
         '''
         # TODO: Exercise 1
-        x_projected = 1
+        self._maxComponents = k
+        self.train(X)
+        x_projected = self.to_pca(X)
         return x_projected

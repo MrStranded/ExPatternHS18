@@ -28,6 +28,8 @@ def toyExample():
     pca.plot_pca(data)
     plt.subplot(1,2,2)
     # TODO 1.3: Plot data projected into 1 dimension
+    Xout = pca.project(data, 1)
+    pca.plot_pca(Xout)
     plt.show()
 
 
