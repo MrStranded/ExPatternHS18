@@ -19,3 +19,7 @@ Logistic Regression:
         cost function: 35: norm of w
         second derivative: derive the first derivation: only entrices on the diagonal (still 3x3 with 0,0 to 0)
         don't regularize the bias
+Regularization:
+    slide 35: squared norm of w is regularization term with 1 over 2 sigma squared
+    we want the w vector to be small: large sigma: no regularization
+    small sigma: the first term in the cost function is weighed less

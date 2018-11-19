@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import numpy as np
 import scipy.io
+import scipy.spatial
 import matplotlib.pyplot as plt
 import math
 from pca import PCA
@@ -14,7 +15,7 @@ def euclideanDistance(a, b):
     :param b: vector
     :return: scalar
     '''
-    return '???'
+    return np.linalg.norm(a-b)
 
 # TODO: Implement mahalanobis distance between two vectors
 def mahalanobisDistance(a, b, invS):
@@ -24,7 +25,7 @@ def mahalanobisDistance(a, b, invS):
     :param invS: matrix
     :return: scalar
     '''
-    return '???'
+    return scipy.spatial.distance.mahalanobis(a,b,invS)
 
 
 def faceRecognition():

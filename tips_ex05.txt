@@ -1,0 +1,14 @@
+PCA:
+    finding meaningful correlation in data
+    principal components are our new axes
+    substract the mean to get mean-free data
+    slide 30
+    computre eigenvalues
+    slide 13: project in/out (closest slide he found)
+Eigenfaces:
+
+3D Faces:
+    not much coding to do
+    html file output
+    random faces by random alpha vectors
+    laoding and rendering is given
