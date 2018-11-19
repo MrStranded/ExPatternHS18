@@ -45,12 +45,34 @@ def faceRecognition():
     pca = PCA(numOfPrincipalComponents)
     X = data_matrix()
     pca.train(X)
+    alphagal = pca.to_pca(X)
     # TODO: Plot the variance of each principal component - use a simple plt.plot()
-    plt.plot(np.var(pca.to_pca(X),1,dtype=np.float64))
+    plt.plot(np.var(alphagal,1,dtype=np.float64))
     plt.show()
     # TODO: Implement face recognition
+    novel = load_novel()
+    pcanovel = PCA(numOfPrincipalComponents)
+    pcanovel.train(novel)
+    alphanov = pcanovel.to_pca(novel)
 
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
+
+
+def load_novel():
+    matnov = scipy.io.loadmat('../data/novel.mat')
+    nov = matnov['novel'][0]
+
+    numOfFaces = nov.shape[0]
+    [N, M] = nov.item(0)[1].shape
+
+    print("NumOfFaces in dataset", numOfFaces)
+
+    data_matrix = np.zeros((N*M,numOfFaces))
+    for i in range(numOfFaces):
+        facefirst = nov.item(i)[1]
+        data_matrix[:,i] = facefirst.flatten().T
+
+    return data_matrix
 
 
 def data_matrix():
