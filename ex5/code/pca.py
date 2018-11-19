@@ -38,7 +38,8 @@ class PCA():
         :param X: Training data
         '''
         # TODO: Implement PCA mean (mu), principal components (U) and variance (S) of the given data (X)
-        mu = (np.mean(X, axis=1)).reshape((2, 1))
+        [rows,cols] = X.shape
+        mu = (np.mean(X, axis=1)).reshape((rows, 1))
         mu_expanded = np.outer(mu, np.ones(X.shape[1]))
         X = X - mu_expanded
         u, s, vh = np.linalg.svd(X, full_matrices=False)
@@ -68,7 +69,7 @@ class PCA():
         # Build data matrix, from mean free data
         mu_expanded = np.outer(self.mu, np.ones(X.shape[1]))
         X = X - mu_expanded
-        alpha = np.dot(self.U, X)
+        alpha = np.dot(self.U.T, X)
         return alpha
 
     def from_pca(self, alpha):

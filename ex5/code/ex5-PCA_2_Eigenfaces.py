@@ -42,12 +42,37 @@ def faceRecognition():
     '''
     numOfPrincipalComponents = 25
     # TODO: Train a PCA on the provided face images
-
+    pca = PCA(numOfPrincipalComponents)
+    X = data_matrix()
+    pca.train(X)
     # TODO: Plot the variance of each principal component - use a simple plt.plot()
-
+    plt.plot(np.var(pca.to_pca(X),1,dtype=np.float64))
+    plt.show()
     # TODO: Implement face recognition
 
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
+
+
+def data_matrix():
+    '''
+    Hint: In order to do this, you must assemble a data matrix by stacking each image m x n
+    into a a column vector mn x 1 and concatenate all column vectors horizontally.
+    '''
+    matgal = scipy.io.loadmat('../data/gallery.mat')
+    gall = matgal['gall'][0]
+
+    numOfFaces = gall.shape[0]
+    [N, M] = gall.item(0)[1].shape
+
+    print("NumOfFaces in dataset", numOfFaces)
+
+    data_matrix = np.zeros((N*M,numOfFaces))
+    for i in range(numOfFaces):
+        facefirst = gall.item(i)[1]
+        data_matrix[:,i] = facefirst.flatten().T
+
+    return data_matrix
+
 
 
 def faceLoaderExample():
@@ -80,6 +105,6 @@ if __name__ == "__main__":
     print(sys.version)
     print("##########-##########-##########")
     print("PCA images!")
-    faceLoaderExample()
+    #faceLoaderExample()
     faceRecognition()
     print("Fertig PCA!")
