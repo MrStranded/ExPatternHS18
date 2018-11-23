@@ -57,7 +57,7 @@ def faceRecognition():
 
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
 
-
+novID = 0
 def load_novel():
     matnov = scipy.io.loadmat('../data/novel.mat')
     nov = matnov['novel'][0]
@@ -68,13 +68,16 @@ def load_novel():
     print("NumOfFaces in dataset", numOfFaces)
 
     data_matrix = np.zeros((N*M,numOfFaces))
+    novID = np.zeros(numOfFaces)
     for i in range(numOfFaces):
         facefirst = nov.item(i)[1]
+        faceId = nov.item(i)[0][0]
         data_matrix[:,i] = facefirst.flatten().T
+        novID[i] = faceId
 
     return data_matrix
 
-
+dataID = 0
 def data_matrix():
     '''
     Hint: In order to do this, you must assemble a data matrix by stacking each image m x n
@@ -89,9 +92,12 @@ def data_matrix():
     print("NumOfFaces in dataset", numOfFaces)
 
     data_matrix = np.zeros((N*M,numOfFaces))
+    dataID = np.zeros(numOfFaces)
     for i in range(numOfFaces):
         facefirst = gall.item(i)[1]
+        faceId = gall.item(i)[0][0]
         data_matrix[:,i] = facefirst.flatten().T
+        dataID[i] = faceId
 
     return data_matrix
 
