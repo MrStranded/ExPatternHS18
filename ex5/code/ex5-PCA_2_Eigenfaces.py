@@ -118,7 +118,7 @@ def faceRecognition():
     fig.add_subplot(rows, columns, 2)
     plt.imshow(gall_faces.item(correct_partner)[1], cmap='gray')
     fig.add_subplot(rows, columns, 3)
-    correct_projected = pca.project(novel, numOfPrincipalComponents)[:,correct_classified].reshape(gall_faces.item(correct_partner)[1].shape())
+    correct_projected = pca.project(novel, numOfPrincipalComponents)[:,correct_classified].reshape(gall_faces.item(correct_partner)[1].shape)
     plt.imshow(correct_projected, cmap='gray')
 
     # wrong
@@ -126,6 +126,9 @@ def faceRecognition():
     plt.imshow(nov_faces.item(wrong_classified)[1], cmap='gray')
     fig.add_subplot(rows, columns, 5)
     plt.imshow(gall_faces.item(wrong_partner)[1], cmap='gray')
+    fig.add_subplot(rows, columns, 6)
+    wrong_projected = pca.project(novel, numOfPrincipalComponents)[:,wrong_classified].reshape(gall_faces.item(wrong_partner)[1].shape)
+    plt.imshow(wrong_projected, cmap='gray')
 
     plt.show()
 
