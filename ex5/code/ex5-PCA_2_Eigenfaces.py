@@ -1,5 +1,6 @@
 import sys
 import matplotlib
+
 matplotlib.use('TkAgg')
 import numpy as np
 import scipy.io
@@ -7,6 +8,7 @@ import scipy.spatial
 import matplotlib.pyplot as plt
 import math
 from pca import PCA
+
 
 # TODO: Implement euclidean distance between two vectors
 def euclideanDistance(a, b):
@@ -17,6 +19,7 @@ def euclideanDistance(a, b):
     '''
     return math.sqrt(sum([(x - y) ** 2 for x, y in zip(a, b)]))
 
+
 # TODO: Implement mahalanobis distance between two vectors
 def mahalanobisDistance(a, b, invS):
     '''
@@ -25,7 +28,7 @@ def mahalanobisDistance(a, b, invS):
     :param invS: matrix
     :return: scalar
     '''
-    return scipy.spatial.distance.mahalanobis(a,b,invS)
+    return scipy.spatial.distance.mahalanobis(a, b, invS)
 
 
 def faceRecognition():
@@ -47,8 +50,9 @@ def faceRecognition():
     pca.train(X)
     alphagal = pca.to_pca(X)
     # TODO: Plot the variance of each principal component - use a simple plt.plot()
-    plt.plot(np.var(alphagal,1,dtype=np.float64))
-    plt.show()
+    f = plt.figure(1)
+    plt.plot(np.var(alphagal, 1, dtype=np.float64))
+    f.show()
     # TODO: Implement face recognition
     (novel, novel_labels, nov_faces) = load_novel()
     alphanov = pca.to_pca(novel)
@@ -56,25 +60,25 @@ def faceRecognition():
     matches_e = []
     matches_m = []
 
-    invS = np.diag(1./pca.S)
+    invS = np.diag(1. / pca.S)
 
     for i in range(alphanov.shape[1]):
         lowest_e = (sys.maxsize, 0)
         lowest_m = (sys.maxsize, 0)
 
         for j in range(alphagal.shape[1]):
-            euclidean = euclideanDistance(alphanov[:,i],alphagal[:,j])
+            euclidean = euclideanDistance(alphanov[:, i], alphagal[:, j])
 
             if euclidean < lowest_e[0]:
                 lowest_e = euclidean, j
 
-            maha = mahalanobisDistance(alphanov[:,i],alphagal[:,j], invS)
+            maha = mahalanobisDistance(alphanov[:, i], alphagal[:, j], invS)
 
             if maha < lowest_m[0]:
                 lowest_m = maha, j
 
-        matches_e.append((i,lowest_e[1]))
-        matches_m.append((i,lowest_m[1]))
+        matches_e.append((i, lowest_e[1]))
+        matches_m.append((i, lowest_m[1]))
 
     print(matches_e)
     print(matches_m)
@@ -98,19 +102,18 @@ def faceRecognition():
         if data_labels[matches_m[x][0]] == novel_labels[matches_m[x][1]]:
             correct_m += 1
 
-
-    print("Correct Euclidian Classification in percent: {}".format(correct_e/len(matches_e)*100))
+    print("Correct Euclidian Classification in percent: {}".format(correct_e / len(matches_e) * 100))
     print("Correct Mahalanobis Classification in percent: {}".format(correct_m / len(matches_m) * 100))
 
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
 
     # Show correct classified
-    fig = plt.figure(1)
+    fig = plt.figure(2)
     columns = 3
     rows = 2
     titles = ("correct test", "wrong test", "projected test", "correct train", "wrong train", "projected train")
 
-    #plt.title(titles[i])
+    # plt.title(titles[i])
 
     # correct
     sub = fig.add_subplot(rows, columns, 1)
@@ -121,7 +124,8 @@ def faceRecognition():
     plt.imshow(gall_faces.item(correct_partner)[1], cmap='gray')
     sub = fig.add_subplot(rows, columns, 3)
     sub.set_title("Novel projected")
-    correct_projected = pca.project(novel, numOfPrincipalComponents)[:,correct_classified].reshape(gall_faces.item(correct_partner)[1].shape)
+    correct_projected = pca.project(novel, numOfPrincipalComponents)[:, correct_classified].reshape(
+        gall_faces.item(correct_partner)[1].shape)
     plt.imshow(correct_projected, cmap='gray')
 
     # wrong
@@ -133,15 +137,18 @@ def faceRecognition():
     plt.imshow(gall_faces.item(wrong_partner)[1], cmap='gray')
     sub = fig.add_subplot(rows, columns, 6)
     sub.set_title("Novel projected")
-    wrong_projected = pca.project(novel, numOfPrincipalComponents)[:,wrong_classified].reshape(gall_faces.item(wrong_partner)[1].shape)
+    wrong_projected = pca.project(novel, numOfPrincipalComponents)[:, wrong_classified].reshape(
+        gall_faces.item(wrong_partner)[1].shape)
     plt.imshow(wrong_projected, cmap='gray')
 
-    plt.show()
+    fig.show()
+
 
 def load_novel_faces():
     matnov = scipy.io.loadmat('../data/novel.mat')
     nov = matnov['novel'][0]
     return nov
+
 
 def load_novel():
     matnov = scipy.io.loadmat('../data/novel.mat')
@@ -152,15 +159,16 @@ def load_novel():
 
     print("NumOfFaces in novel dataset", numOfFaces)
 
-    data_matrix = np.zeros((N*M,numOfFaces))
+    data_matrix = np.zeros((N * M, numOfFaces))
     novID = np.zeros(numOfFaces)
     for i in range(numOfFaces):
         facefirst = nov.item(i)[1]
         faceId = nov.item(i)[0][0]
-        data_matrix[:,i] = facefirst.flatten().T
+        data_matrix[:, i] = facefirst.flatten().T
         novID[i] = faceId
 
     return (data_matrix, novID, nov)
+
 
 def data_matrix():
     '''
@@ -175,16 +183,15 @@ def data_matrix():
 
     print("NumOfFaces in gallery dataset", numOfFaces)
 
-    data_matrix = np.zeros((N*M,numOfFaces))
+    data_matrix = np.zeros((N * M, numOfFaces))
     dataID = np.zeros(numOfFaces)
     for i in range(numOfFaces):
         facefirst = gall.item(i)[1]
         faceId = gall.item(i)[0][0]
-        data_matrix[:,i] = facefirst.flatten().T
+        data_matrix[:, i] = facefirst.flatten().T
         dataID[i] = faceId
 
     return (data_matrix, dataID, gall)
-
 
 
 def faceLoaderExample():
@@ -211,12 +218,10 @@ def faceLoaderExample():
     plt.show()
 
 
-
-
 if __name__ == "__main__":
     print(sys.version)
     print("##########-##########-##########")
     print("PCA images!")
-    #faceLoaderExample()
+    # faceLoaderExample()
     faceRecognition()
     print("Fertig PCA!")
