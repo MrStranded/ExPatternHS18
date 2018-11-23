@@ -16,10 +16,14 @@ def renderRandomFace(faces, pca, num):
     '''
     # TODO 3.2: Implement missing functionality
     print('Render {} random faces'.format(num))
+    size = faces.meshes.shape[1]
     for i in range(0,num):
-        face = '???'
+        alpha = (np.random.rand(size)*2-np.ones(size))
+        alpha = alpha * pca.S
+        alpha.reshape((size,1))
+        face = pca.from_pca(alpha)
         # TODO: Render face with the renderFace function
-        renderFace('???')
+        renderFace(face, faces.triangulation,name="random" + str(i))
 
 
 def lowRankApproximation(faces, pca):
@@ -52,9 +56,10 @@ def faces3DExample():
     # Use the helper function 'faces.getMesh(2)' to obtain one of the vectorized 3D faces
     faces = initializeFaces(pathToData = '../data/face-data/')
 
-    renderFace(faces.getMesh(2), faces.triangulation, name="Vetter")
+    #renderFace(faces.getMesh(2), faces.triangulation, name="Vetter")
     # TODO 3.1: Train PCA with the 3D face dataset
-    pca = '???'
+    pca = PCA()
+    pca.train(faces.meshes)
 
     renderRandomFace(faces, pca, 3)
 
