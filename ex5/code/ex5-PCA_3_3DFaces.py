@@ -56,12 +56,12 @@ def faces3DExample():
     # Use the helper function 'faces.getMesh(2)' to obtain one of the vectorized 3D faces
     faces = initializeFaces(pathToData = '../data/face-data/')
 
-    #renderFace(faces.getMesh(2), faces.triangulation, name="Vetter")
+    renderFace(faces.getMesh(2), faces.triangulation, name="Vetter")
     # TODO 3.1: Train PCA with the 3D face dataset
     pca = PCA()
     pca.train(faces.meshes)
 
-    #renderRandomFace(faces, pca, 3)
+    renderRandomFace(faces, pca, 3)
 
     lowRankApproximation(faces, pca)
 

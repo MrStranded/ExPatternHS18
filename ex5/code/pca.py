@@ -78,7 +78,9 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
-        return (self.U.dot(alpha.reshape((self.U.shape[1], -1)))) + self.mu
+        alpha_reshaped = alpha.reshape((self.U.shape[1], -1))
+        x_out = self.U.dot(alpha_reshaped) + self.mu
+        return x_out
 
     def project(self, X, k):
         '''
