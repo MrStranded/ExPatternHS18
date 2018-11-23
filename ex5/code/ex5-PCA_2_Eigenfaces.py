@@ -83,14 +83,18 @@ def faceRecognition():
     correct_e = 0
 
     correct_classified = 0
+    correct_partner = 0
     wrong_classified = 0
+    wrong_partner = 0
 
     for x in range(len(matches_e)):
         if data_labels[matches_e[x][0]] == novel_labels[matches_e[x][1]]:
             correct_e += 1
             correct_classified = x
+            correct_partner = matches_e[x][1]
         else:
             wrong_classified = x
+            wrong_partner = matches_e[x][1]
         if data_labels[matches_m[x][0]] == novel_labels[matches_m[x][1]]:
             correct_m += 1
 
@@ -101,10 +105,28 @@ def faceRecognition():
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
 
     # Show correct classified
-    plt.figure(1)
-    plt.title('correct face')
-    print('Face got face id: {}'.format(correct_classified))
+    fig = plt.figure(1)
+    columns = 3
+    rows = 2
+    titles = ("correct test", "wrong test", "projected test", "correct train", "wrong train", "projected train")
+
+    #plt.title(titles[i])
+
+    # correct
+    fig.add_subplot(rows, columns, 1)
     plt.imshow(nov_faces.item(correct_classified)[1], cmap='gray')
+    fig.add_subplot(rows, columns, 2)
+    plt.imshow(gall_faces.item(correct_partner)[1], cmap='gray')
+    fig.add_subplot(rows, columns, 3)
+    correct_projected = pca.project(novel, numOfPrincipalComponents)[:,correct_classified].reshape(gall_faces.item(correct_partner)[1].shape())
+    plt.imshow(correct_projected, cmap='gray')
+
+    # wrong
+    fig.add_subplot(rows, columns, 4)
+    plt.imshow(nov_faces.item(wrong_classified)[1], cmap='gray')
+    fig.add_subplot(rows, columns, 5)
+    plt.imshow(gall_faces.item(wrong_partner)[1], cmap='gray')
+
     plt.show()
 
 def load_novel_faces():
