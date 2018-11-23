@@ -37,9 +37,9 @@ def lowRankApproximation(faces, pca):
     face = faces.getMesh(2)[:,None]
     for i in range(1, len(pca.S)):
         print(' - Approximation to : {} components'.format(i))
-        projection = '???'
+        projection = pca.project(face, i)
         # TODO: Render face with the renderFace function
-        renderFace('???')
+        renderFace(projection, faces.triangulation,name="PCA " + str(i))
 
 
 def faces3DExample():
@@ -61,7 +61,7 @@ def faces3DExample():
     pca = PCA()
     pca.train(faces.meshes)
 
-    renderRandomFace(faces, pca, 3)
+    #renderRandomFace(faces, pca, 3)
 
     lowRankApproximation(faces, pca)
 
