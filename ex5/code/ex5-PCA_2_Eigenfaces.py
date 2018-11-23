@@ -15,7 +15,7 @@ def euclideanDistance(a, b):
     :param b: vector
     :return: scalar
     '''
-    return np.linalg.norm(a-b)
+    return math.sqrt(sum([(x - y) ** 2 for x, y in zip(a, b)]))
 
 # TODO: Implement mahalanobis distance between two vectors
 def mahalanobisDistance(a, b, invS):
@@ -51,9 +51,47 @@ def faceRecognition():
     plt.show()
     # TODO: Implement face recognition
     (novel, novel_labels) = load_novel()
-    pcanovel = PCA(numOfPrincipalComponents)
-    pcanovel.train(novel)
-    alphanov = pcanovel.to_pca(novel)
+    alphanov = pca.to_pca(novel)
+
+    matches_e = []
+    matches_m = []
+
+    invS = np.diag(1./pca.S)
+
+    for i in range(alphanov.shape[1]):
+        lowest_e = (sys.maxsize, 0)
+        lowest_m = (sys.maxsize, 0)
+
+        for j in range(alphagal.shape[1]):
+            euclidean = euclideanDistance(alphanov[:,i],alphagal[:,j])
+
+            if euclidean < lowest_e[0]:
+                lowest_e = euclidean, j
+
+            maha = mahalanobisDistance(alphanov[:,i],alphagal[:,j], invS)
+
+            if maha < lowest_m[0]:
+                lowest_m = maha, j
+
+        matches_e.append((i,lowest_e[1]))
+        matches_m.append((i,lowest_m[1]))
+
+    print(matches_e)
+    print(matches_m)
+
+    correct_m = 0
+    correct_e = 0
+    for x in range(len(matches_e)):
+        if data_labels[matches_e[x][0]] == novel_labels[matches_e[x][1]]:
+            correct_e += 1
+        if data_labels[matches_m[x][0]] == novel_labels[matches_m[x][1]]:
+            correct_m += 1
+
+
+    print("Correct Euclidian Classification in percent: {}".format(correct_e/len(matches_e)*100))
+    print("Correct Mahalanobis Classification in percent: {}".format(correct_m / len(matches_m) * 100))
+
+
 
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
 
@@ -64,7 +102,7 @@ def load_novel():
     numOfFaces = nov.shape[0]
     [N, M] = nov.item(0)[1].shape
 
-    print("NumOfFaces in dataset", numOfFaces)
+    print("NumOfFaces in novel dataset", numOfFaces)
 
     data_matrix = np.zeros((N*M,numOfFaces))
     novID = np.zeros(numOfFaces)
@@ -87,7 +125,7 @@ def data_matrix():
     numOfFaces = gall.shape[0]
     [N, M] = gall.item(0)[1].shape
 
-    print("NumOfFaces in dataset", numOfFaces)
+    print("NumOfFaces in gallery dataset", numOfFaces)
 
     data_matrix = np.zeros((N*M,numOfFaces))
     dataID = np.zeros(numOfFaces)
