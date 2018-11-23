@@ -38,7 +38,7 @@ class PCA():
         :param X: Training data
         '''
         # TODO: Implement PCA mean (mu), principal components (U) and variance (S) of the given data (X)
-        [rows,cols] = X.shape
+        [rows, cols] = X.shape
         mu = (np.mean(X, axis=1)).reshape((rows, 1))
         mu_expanded = np.outer(mu, np.ones(X.shape[1]))
         X = X - mu_expanded
@@ -50,14 +50,14 @@ class PCA():
             # only use self._maxComponents
             m = self._maxComponents
             s = s[:m]
-            u = u[:,:m]
+            u = u[:, :m]
         # nxm matrix which stores m principal components
         # is a vector where the i-th entry contains the i-th variance value lambda corresponding to the i-th
         # principal component
         self.mu = mu
         self.U = u
         self.S = s
-        return (mu, self.U, self.S)
+        return mu, self.U, self.S
 
     def to_pca(self, X):
         '''
@@ -92,6 +92,6 @@ class PCA():
         # TODO: Exercise 1
         self._maxComponents = k
         x_projected = self.to_pca(X)
-        x_projected[k:,:] = 0
+        x_projected[k:, :] = 0
         x_projected = self.from_pca(x_projected)
         return x_projected

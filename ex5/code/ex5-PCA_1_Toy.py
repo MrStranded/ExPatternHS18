@@ -19,13 +19,13 @@ def toyExample():
     # TODO 1.2: Compute data variance to the S vector computed by the PCA
     data_variance = np.var(data,axis=1)
     print(data_variance)
-    print(pca.S)
+    print(np.power(pca.S,2)/data.shape[1])
     # TODO 1.3: Compute data variance for the projected data (into 1D) to the S vector computed by the PCA
     Xout = pca.project(data, 1)
     print("Variance of the projected data")
     data_variance = np.var(Xout,axis=1)
     print(data_variance)
-    print(pca.S)
+    print(np.power(pca.S,2)/data.shape[1])
 
 
     plt.figure()
@@ -35,6 +35,7 @@ def toyExample():
     pca.plot_pca(data)
     plt.subplot(1,2,2)
     # TODO 1.3: Plot data projected into 1 dimension
+    pca.S[1] = 0
     pca.plot_pca(Xout)
     plt.show()
 
