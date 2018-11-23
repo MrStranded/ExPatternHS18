@@ -80,7 +80,7 @@ class PCA():
         # TODO: Exercise 1
         try:
             Xout = np.dot(self.U, alpha)
-            mu_expanded = np.outer(self.mu, np.ones(alpha.T.shape[1]))
+            mu_expanded = np.outer(self.mu, np.ones(alpha.shape[1]))
         except ValueError:
             Xout = np.dot(self.U.T,alpha)
             mu_expanded = np.outer(self.mu, np.ones(alpha.shape[1]))
