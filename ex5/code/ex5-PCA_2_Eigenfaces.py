@@ -113,20 +113,26 @@ def faceRecognition():
     #plt.title(titles[i])
 
     # correct
-    fig.add_subplot(rows, columns, 1)
+    sub = fig.add_subplot(rows, columns, 1)
+    sub.set_title("Novel to test")
     plt.imshow(nov_faces.item(correct_classified)[1], cmap='gray')
-    fig.add_subplot(rows, columns, 2)
+    sub = fig.add_subplot(rows, columns, 2)
+    sub.set_title("Closest from training")
     plt.imshow(gall_faces.item(correct_partner)[1], cmap='gray')
-    fig.add_subplot(rows, columns, 3)
+    sub = fig.add_subplot(rows, columns, 3)
+    sub.set_title("Novel projected")
     correct_projected = pca.project(novel, numOfPrincipalComponents)[:,correct_classified].reshape(gall_faces.item(correct_partner)[1].shape)
     plt.imshow(correct_projected, cmap='gray')
 
     # wrong
-    fig.add_subplot(rows, columns, 4)
+    sub = fig.add_subplot(rows, columns, 4)
+    sub.set_title("Novel to test")
     plt.imshow(nov_faces.item(wrong_classified)[1], cmap='gray')
-    fig.add_subplot(rows, columns, 5)
+    sub = fig.add_subplot(rows, columns, 5)
+    sub.set_title("Closest from training")
     plt.imshow(gall_faces.item(wrong_partner)[1], cmap='gray')
-    fig.add_subplot(rows, columns, 6)
+    sub = fig.add_subplot(rows, columns, 6)
+    sub.set_title("Novel projected")
     wrong_projected = pca.project(novel, numOfPrincipalComponents)[:,wrong_classified].reshape(gall_faces.item(wrong_partner)[1].shape)
     plt.imshow(wrong_projected, cmap='gray')
 
