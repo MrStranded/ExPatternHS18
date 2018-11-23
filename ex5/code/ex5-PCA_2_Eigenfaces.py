@@ -43,14 +43,14 @@ def faceRecognition():
     numOfPrincipalComponents = 25
     # TODO: Train a PCA on the provided face images
     pca = PCA(numOfPrincipalComponents)
-    (X, data_labels) = data_matrix()
+    (X, data_labels, gall_faces) = data_matrix()
     pca.train(X)
     alphagal = pca.to_pca(X)
     # TODO: Plot the variance of each principal component - use a simple plt.plot()
     plt.plot(np.var(alphagal,1,dtype=np.float64))
     plt.show()
     # TODO: Implement face recognition
-    (novel, novel_labels) = load_novel()
+    (novel, novel_labels, nov_faces) = load_novel()
     alphanov = pca.to_pca(novel)
 
     matches_e = []
@@ -81,9 +81,16 @@ def faceRecognition():
 
     correct_m = 0
     correct_e = 0
+
+    correct_classified = 0
+    wrong_classified = 0
+
     for x in range(len(matches_e)):
         if data_labels[matches_e[x][0]] == novel_labels[matches_e[x][1]]:
             correct_e += 1
+            correct_classified = x
+        else:
+            wrong_classified = x
         if data_labels[matches_m[x][0]] == novel_labels[matches_m[x][1]]:
             correct_m += 1
 
@@ -91,9 +98,19 @@ def faceRecognition():
     print("Correct Euclidian Classification in percent: {}".format(correct_e/len(matches_e)*100))
     print("Correct Mahalanobis Classification in percent: {}".format(correct_m / len(matches_m) * 100))
 
-
-
     # TODO: Visualize some of the correctly and wrongly classified images (see example in exercise sheet)
+
+    # Show correct classified
+    plt.figure(1)
+    plt.title('correct face')
+    print('Face got face id: {}'.format(correct_classified))
+    plt.imshow(nov_faces.item(correct_classified)[1], cmap='gray')
+    plt.show()
+
+def load_novel_faces():
+    matnov = scipy.io.loadmat('../data/novel.mat')
+    nov = matnov['novel'][0]
+    return nov
 
 def load_novel():
     matnov = scipy.io.loadmat('../data/novel.mat')
@@ -112,7 +129,7 @@ def load_novel():
         data_matrix[:,i] = facefirst.flatten().T
         novID[i] = faceId
 
-    return (data_matrix, novID)
+    return (data_matrix, novID, nov)
 
 def data_matrix():
     '''
@@ -135,7 +152,7 @@ def data_matrix():
         data_matrix[:,i] = facefirst.flatten().T
         dataID[i] = faceId
 
-    return (data_matrix, dataID)
+    return (data_matrix, dataID, gall)
 
 
 
