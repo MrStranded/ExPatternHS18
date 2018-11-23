@@ -25,7 +25,7 @@ def toyExample():
     print("Variance of the projected data")
     data_variance = np.var(Xout,axis=1)
     print(data_variance)
-    print(np.power(pca.S,2)/data.shape[1])
+    print(np.power(pca.S[0],2)/data.shape[1])
 
 
     plt.figure()
