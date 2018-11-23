@@ -78,15 +78,7 @@ class PCA():
         :return: X in the original space
         '''
         # TODO: Exercise 1
-        try:
-            Xout = np.dot(self.U, alpha)
-            mu_expanded = np.outer(self.mu, np.ones(alpha.shape[1]))
-        except ValueError:
-            Xout = np.dot(self.U.T,alpha)
-            mu_expanded = np.outer(self.mu, np.ones(alpha.shape[1]))
-
-        Xout = Xout + mu_expanded
-        return Xout
+        return (self.U.dot(alpha.reshape((self.U.shape[1], -1)))) + self.mu
 
     def project(self, X, k):
         '''
