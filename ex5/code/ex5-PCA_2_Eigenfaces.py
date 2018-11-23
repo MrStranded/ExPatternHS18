@@ -118,6 +118,7 @@ def faceRecognition():
     # correct
     sub = fig.add_subplot(rows, columns, 1)
     sub.set_title("Novel to test")
+    sub.set_ylabel("Correct Classified")
     plt.imshow(nov_faces.item(correct_classified)[1], cmap='gray')
     sub = fig.add_subplot(rows, columns, 2)
     sub.set_title("Closest from training")
@@ -131,6 +132,7 @@ def faceRecognition():
     # wrong
     sub = fig.add_subplot(rows, columns, 4)
     sub.set_title("Novel to test")
+    sub.set_ylabel("Wrong Classified")
     plt.imshow(nov_faces.item(wrong_classified)[1], cmap='gray')
     sub = fig.add_subplot(rows, columns, 5)
     sub.set_title("Closest from training")
