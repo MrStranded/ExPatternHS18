@@ -1,0 +1,4 @@
+h is the sigmoid function
+calc partial derivatives (will take up some space on the paper)
+use the pytorch functions!
+last linear regression error: 0.0031
