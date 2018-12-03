@@ -1,0 +1,25 @@
+SVM:
+    To calculate bias: only use support vectors that are exactly on the margin
+Naive Bayes:
+    loop over each word in the message + prior
+    but: counting how many times "university/money" occurs in the email
+    compute log likelihood of mails
+    p is division p(w|s)/p(w|h)
+Logistic Regression:
+    run Mnist file for classification results
+    cost function: not really neccessary to get the code running
+        abort when this function gets close to 0
+    first derivative:
+        slide 27: weight parameters
+        Hessian matrix: slide 30 = 3x3 in toy example
+        we do not need to use the minus
+    + iterative algorithm
+    regularization:
+        prevents overfitting: choose the simplest function
+        cost function: 35: norm of w
+        second derivative: derive the first derivation: only entrices on the diagonal (still 3x3 with 0,0 to 0)
+        don't regularize the bias
+Regularization:
+    slide 35: squared norm of w is regularization term with 1 over 2 sigma squared
+    we want the w vector to be small: large sigma: no regularization
+    small sigma: the first term in the cost function is weighed less
