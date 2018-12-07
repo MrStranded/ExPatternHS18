@@ -25,3 +25,5 @@ if __name__ == "__main__":
     print("Neural network parabola example!")
     parabolaData()
     print("Done!")
+
+# validation accuracy after 500 epochs of training: 78.5
